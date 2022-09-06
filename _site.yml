@@ -1,26 +1,31 @@
-name: "my-website"
+name : "PDA"
+title : "Proteomics Data Analysis (PDA)"
 navbar:
-  title: "My Website"
+  title: "PDA"
   left:
     - icon: fa-home
       href: index.html
-    - text: "About"
-      href: about.html
-    - text: "Lectures"
+    - text: "Topics"
       icon: fa-chalkboard-teacher
       menu:
-        - text: "Example"
-          href: example.html
-    - text: "Labs"
+      - text: Quantification - Preprocessing
+        href: pda_quantification_preprocessing.html
+      - text: Wrap-up Preprocessing - Peptide-Level-Models
+        href: pda_robustSummarisation_peptideModels.html
+      - text: Quantification - Differential Abundance Analysis
+        href: pda_quantification_inference.html
+      - text: Wrap-up DA - Blocking
+        href: pda_blocking_wrapup.html
+    - text: "Exercises"
       icon: fa-laptop
       menu:
-      - text: "Lab 1"
-        href:
-      - text: "Lab 2"
-        href:
+      - text: Quantification - Preprocessing
+        href: pda_tutorialPreprocessing.html
+      - text: Quantification - Design
+        href: pda_tutorialDesign.html
   right:
-    - icon: fab fa-github
-      href: https://github.com/statOmics/Rmd-website
+    - icon: fab fa-github      
+      href: https://github.com/statOmics/PDA
     - text: "statOmics"
       href: http://statomics.github.io/
 output:
@@ -37,4 +42,4 @@ output:
         after_body: footer.html
       css: style.css
 new_session: true
-exclude: ["renv.lock"]
+exclude: ["renv.lock", "update_install_R.R", "install.R"]
