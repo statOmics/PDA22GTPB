@@ -1,0 +1,1825 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+
+<meta name="author" content="Lieven Clement" />
+
+
+<title>Statistical Methods for Quantitative MS-based Proteomics: Part I. Preprocessing</title>
+
+<script src="site_libs/header-attrs-2.13/header-attrs.js"></script>
+<script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<link href="site_libs/bootstrap-3.3.5/css/flatly.min.css" rel="stylesheet" />
+<script src="site_libs/bootstrap-3.3.5/js/bootstrap.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/html5shiv.min.js"></script>
+<script src="site_libs/bootstrap-3.3.5/shim/respond.min.js"></script>
+<style>h1 {font-size: 34px;}
+       h1.title {font-size: 38px;}
+       h2 {font-size: 30px;}
+       h3 {font-size: 24px;}
+       h4 {font-size: 18px;}
+       h5 {font-size: 16px;}
+       h6 {font-size: 12px;}
+       code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
+       pre:not([class]) { background-color: white }</style>
+<script src="site_libs/jqueryui-1.11.4/jquery-ui.min.js"></script>
+<link href="site_libs/tocify-1.9.1/jquery.tocify.css" rel="stylesheet" />
+<script src="site_libs/tocify-1.9.1/jquery.tocify.js"></script>
+<script src="site_libs/navigation-1.1/tabsets.js"></script>
+<script src="site_libs/navigation-1.1/codefolding.js"></script>
+<script src="site_libs/navigation-1.1/sourceembed.js"></script>
+<link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
+<script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
+<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
+<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
+
+<style type="text/css">
+  code{white-space: pre-wrap;}
+  span.smallcaps{font-variant: small-caps;}
+  span.underline{text-decoration: underline;}
+  div.column{display: inline-block; vertical-align: top; width: 50%;}
+  div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+  ul.task-list{list-style: none;}
+    </style>
+
+
+
+<style type="text/css">
+  code {
+    white-space: pre;
+  }
+  .sourceCode {
+    overflow: visible;
+  }
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+  { counter-reset: source-line 0; }
+pre.numberSource code > span
+  { position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+  { content: counter(source-line);
+    position: relative; left: -1em; text-align: right; vertical-align: baseline;
+    border: none; display: inline-block;
+    -webkit-touch-callout: none; -webkit-user-select: none;
+    -khtml-user-select: none; -moz-user-select: none;
+    -ms-user-select: none; user-select: none;
+    padding: 0 4px; width: 4em;
+    color: #aaaaaa;
+  }
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa;  padding-left: 4px; }
+div.sourceCode
+  {  background-color: #f8f8f8; }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ef2929; } /* Alert */
+code span.an { color: #8f5902; font-weight: bold; font-style: italic; } /* Annotation */
+code span.at { color: #c4a000; } /* Attribute */
+code span.bn { color: #0000cf; } /* BaseN */
+code span.cf { color: #204a87; font-weight: bold; } /* ControlFlow */
+code span.ch { color: #4e9a06; } /* Char */
+code span.cn { color: #000000; } /* Constant */
+code span.co { color: #8f5902; font-style: italic; } /* Comment */
+code span.cv { color: #8f5902; font-weight: bold; font-style: italic; } /* CommentVar */
+code span.do { color: #8f5902; font-weight: bold; font-style: italic; } /* Documentation */
+code span.dt { color: #204a87; } /* DataType */
+code span.dv { color: #0000cf; } /* DecVal */
+code span.er { color: #a40000; font-weight: bold; } /* Error */
+code span.ex { } /* Extension */
+code span.fl { color: #0000cf; } /* Float */
+code span.fu { color: #000000; } /* Function */
+code span.im { } /* Import */
+code span.in { color: #8f5902; font-weight: bold; font-style: italic; } /* Information */
+code span.kw { color: #204a87; font-weight: bold; } /* Keyword */
+code span.op { color: #ce5c00; font-weight: bold; } /* Operator */
+code span.ot { color: #8f5902; } /* Other */
+code span.pp { color: #8f5902; font-style: italic; } /* Preprocessor */
+code span.sc { color: #000000; } /* SpecialChar */
+code span.ss { color: #4e9a06; } /* SpecialString */
+code span.st { color: #4e9a06; } /* String */
+code span.va { color: #000000; } /* Variable */
+code span.vs { color: #4e9a06; } /* VerbatimString */
+code span.wa { color: #8f5902; font-weight: bold; font-style: italic; } /* Warning */
+
+.sourceCode .row {
+  width: 100%;
+}
+.sourceCode {
+  overflow-x: auto;
+}
+.code-folding-btn {
+  margin-right: -30px;
+}
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    for (var j = 0; j < rules.length; j++) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") continue;
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') continue;
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+<style type="text/css">
+#rmd-source-code {
+  display: none;
+}
+</style>
+
+
+<link rel="stylesheet" href="style.css" type="text/css" />
+
+
+
+<style type = "text/css">
+.main-container {
+  max-width: 940px;
+  margin-left: auto;
+  margin-right: auto;
+}
+img {
+  max-width:100%;
+}
+.tabbed-pane {
+  padding-top: 12px;
+}
+.html-widget {
+  margin-bottom: 20px;
+}
+button.code-folding-btn:focus {
+  outline: none;
+}
+summary {
+  display: list-item;
+}
+details > summary > p:only-child {
+  display: inline;
+}
+pre code {
+  padding: 0;
+}
+</style>
+
+
+<style type="text/css">
+.dropdown-submenu {
+  position: relative;
+}
+.dropdown-submenu>.dropdown-menu {
+  top: 0;
+  left: 100%;
+  margin-top: -6px;
+  margin-left: -1px;
+  border-radius: 0 6px 6px 6px;
+}
+.dropdown-submenu:hover>.dropdown-menu {
+  display: block;
+}
+.dropdown-submenu>a:after {
+  display: block;
+  content: " ";
+  float: right;
+  width: 0;
+  height: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: 5px 0 5px 5px;
+  border-left-color: #cccccc;
+  margin-top: 5px;
+  margin-right: -10px;
+}
+.dropdown-submenu:hover>a:after {
+  border-left-color: #adb5bd;
+}
+.dropdown-submenu.pull-left {
+  float: none;
+}
+.dropdown-submenu.pull-left>.dropdown-menu {
+  left: -100%;
+  margin-left: 10px;
+  border-radius: 6px 0 6px 6px;
+}
+</style>
+
+<script type="text/javascript">
+// manage active state of menu based on current page
+$(document).ready(function () {
+  // active menu anchor
+  href = window.location.pathname
+  href = href.substr(href.lastIndexOf('/') + 1)
+  if (href === "")
+    href = "index.html";
+  var menuAnchor = $('a[href="' + href + '"]');
+
+  // mark it active
+  menuAnchor.tab('show');
+
+  // if it's got a parent navbar menu mark it active as well
+  menuAnchor.closest('li.dropdown').addClass('active');
+
+  // Navbar adjustments
+  var navHeight = $(".navbar").first().height() + 15;
+  var style = document.createElement('style');
+  var pt = "padding-top: " + navHeight + "px; ";
+  var mt = "margin-top: -" + navHeight + "px; ";
+  var css = "";
+  // offset scroll position for anchor links (for fixed navbar)
+  for (var i = 1; i <= 6; i++) {
+    css += ".section h" + i + "{ " + pt + mt + "}\n";
+  }
+  style.innerHTML = "body {" + pt + "padding-bottom: 40px; }\n" + css;
+  document.head.appendChild(style);
+});
+</script>
+
+<!-- tabsets -->
+
+<style type="text/css">
+.tabset-dropdown > .nav-tabs {
+  display: inline-table;
+  max-height: 500px;
+  min-height: 44px;
+  overflow-y: auto;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+}
+
+.tabset-dropdown > .nav-tabs > li.active:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li.active:before {
+  content: "&#xe258;";
+  border: none;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open:before {
+  content: "";
+  font-family: 'Glyphicons Halflings';
+  display: inline-block;
+  padding: 10px;
+  border-right: 1px solid #ddd;
+}
+
+.tabset-dropdown > .nav-tabs > li.active {
+  display: block;
+}
+
+.tabset-dropdown > .nav-tabs > li > a,
+.tabset-dropdown > .nav-tabs > li > a:focus,
+.tabset-dropdown > .nav-tabs > li > a:hover {
+  border: none;
+  display: inline-block;
+  border-radius: 4px;
+  background-color: transparent;
+}
+
+.tabset-dropdown > .nav-tabs.nav-tabs-open > li {
+  display: block;
+  float: none;
+}
+
+.tabset-dropdown > .nav-tabs > li {
+  display: none;
+}
+</style>
+
+<!-- code folding -->
+<style type="text/css">
+.code-folding-btn { margin-bottom: 4px; }
+</style>
+
+
+
+<style type="text/css">
+
+#TOC {
+  margin: 25px 0px 20px 0px;
+}
+@media (max-width: 768px) {
+#TOC {
+  position: relative;
+  width: 100%;
+}
+}
+
+@media print {
+.toc-content {
+  /* see https://github.com/w3c/csswg-drafts/issues/4434 */
+  float: right;
+}
+}
+
+.toc-content {
+  padding-left: 30px;
+  padding-right: 40px;
+}
+
+div.main-container {
+  max-width: 1200px;
+}
+
+div.tocify {
+  width: 20%;
+  max-width: 260px;
+  max-height: 85%;
+}
+
+@media (min-width: 768px) and (max-width: 991px) {
+  div.tocify {
+    width: 25%;
+  }
+}
+
+@media (max-width: 767px) {
+  div.tocify {
+    width: 100%;
+    max-width: none;
+  }
+}
+
+.tocify ul, .tocify li {
+  line-height: 20px;
+}
+
+.tocify-subheader .tocify-item {
+  font-size: 0.90em;
+}
+
+.tocify .list-group-item {
+  border-radius: 0px;
+}
+
+
+</style>
+
+
+
+</head>
+
+<body>
+
+
+<div class="container-fluid main-container">
+
+
+<!-- setup 3col/9col grid for toc_float and main content  -->
+<div class="row">
+<div class="col-xs-12 col-sm-4 col-md-3">
+<div id="TOC" class="tocify">
+</div>
+</div>
+
+<div class="toc-content col-xs-12 col-sm-8 col-md-9">
+
+
+
+
+<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+  <div class="container">
+    <div class="navbar-header">
+      <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-bs-toggle="collapse" data-target="#navbar" data-bs-target="#navbar">
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+        <span class="icon-bar"></span>
+      </button>
+      <a class="navbar-brand" href="index.html">PDA</a>
+    </div>
+    <div id="navbar" class="navbar-collapse collapse">
+      <ul class="nav navbar-nav">
+        <li>
+  <a href="index.html">
+    <span class="fa fa-home"></span>
+     
+  </a>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-chalkboard-teacher"></span>
+     
+    Topics
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="pda_quantification_preprocessing.html">Quantification - Preprocessing</a>
+    </li>
+    <li>
+      <a href="pda_robustSummarisation_peptideModels.html">Wrap-up Preprocessing - Peptide-Level-Models</a>
+    </li>
+    <li>
+      <a href="pda_quantification_inference.html">Quantification - Differential Abundance Analysis</a>
+    </li>
+    <li>
+      <a href="pda_blocking_wrapup.html">Wrap-up DA - Blocking</a>
+    </li>
+  </ul>
+</li>
+<li class="dropdown">
+  <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+    <span class="fa fa-laptop"></span>
+     
+    Exercises
+     
+    <span class="caret"></span>
+  </a>
+  <ul class="dropdown-menu" role="menu">
+    <li>
+      <a href="pda_tutorialPreprocessing.html">Quantification - Preprocessing</a>
+    </li>
+    <li>
+      <a href="pda_tutorialDesign.html">Quantification - Design</a>
+    </li>
+  </ul>
+</li>
+      </ul>
+      <ul class="nav navbar-nav navbar-right">
+        <li>
+  <a href="https://github.com/statOmics/PDA">
+    <span class="fab fa-github"></span>
+     
+  </a>
+</li>
+<li>
+  <a href="http://statomics.github.io/">statOmics</a>
+</li>
+      </ul>
+    </div><!--/.nav-collapse -->
+  </div><!--/.container -->
+</div><!--/.navbar -->
+
+<div id="header">
+
+<div class="btn-group pull-right float-right">
+<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
+<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
+<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
+<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
+<li role="separator" class="divider"></li>
+<li><a id="rmd-download-source" href="#">Download Rmd</a></li>
+</ul>
+</div>
+
+
+
+<h1 class="title toc-ignore">Statistical Methods for Quantitative MS-based Proteomics: Part I. Preprocessing</h1>
+<h4 class="author">Lieven Clement</h4>
+<h4 class="date"><a href="https://statomics.github.io">statOmics</a>, Ghent University</h4>
+
+</div>
+
+
+<p><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a></p>
+<ul>
+<li><a href="https://www.youtube.com/playlist?list=PLZH1hP8_LbJJXQeQ_KYDNoq-AXyFBG6nX">Playlist PDA Preprocessing</a></li>
+</ul>
+<div id="outline" class="section level1 unnumbered">
+<h1 class="unnumbered">Outline</h1>
+<ol style="list-style-type: decimal">
+<li><p>Introduction</p></li>
+<li><p>Preprocessing</p>
+<ul>
+<li>Log-transformation</li>
+<li>Filtering</li>
+<li>Normalization</li>
+<li>Summarization</li>
+</ul></li>
+</ol>
+<p>Note, that the R-code is included for learners who are aiming to develop R/markdown scripts to automate their quantitative proteomics data analyses. According to the target audience of the course we either work with a graphical user interface (GUI) in a R/shiny App msqrob2gui (e.g. Proteomics Bioinformatics course of the EBI and the Proteomics Data Analysis course at the Gulbenkian institute) or with R/markdowns scripts (e.g. Bioinformatics Summer School at UCLouvain or the Statistical Genomics Course at Ghent University).</p>
+<hr />
+</div>
+<div id="intro-challenges-in-label-free-quantitative-proteomics" class="section level1" number="1">
+<h1><span class="header-section-number">1</span> Intro: Challenges in Label-Free Quantitative Proteomics</h1>
+<div id="ms-based-workflow" class="section level2" number="1.1">
+<h2><span class="header-section-number">1.1</span> MS-based workflow</h2>
+<p><img src="figures/ProteomicsWorkflow.png" /><!-- --></p>
+<ul>
+<li><p>Peptide Characteristics</p>
+<ul>
+<li>Modifications</li>
+<li>Ionisation Efficiency: huge variability</li>
+<li>Identification
+<ul>
+<li>Misidentification <span class="math inline">\(\rightarrow\)</span> outliers</li>
+<li>MS<span class="math inline">\(^2\)</span> selection on peptide abundance</li>
+<li>Context depending missingness</li>
+<li>Non-random missingness</li>
+</ul></li>
+</ul></li>
+</ul>
+<p><span class="math inline">\(\rightarrow\)</span> Unbalanced pepide identifications across samples and messy data</p>
+<hr />
+</div>
+<div id="level-of-quantification" class="section level2" number="1.2">
+<h2><span class="header-section-number">1.2</span> Level of quantification</h2>
+<ul>
+<li>MS-based proteomics returns peptides: pieces of proteins</li>
+</ul>
+<p><img src="figures/challenges_peptides.png" /><!-- --></p>
+<ul>
+<li>Quantification commonly required on the protein level</li>
+</ul>
+<p><img src="figures/challenges_proteins.png" /><!-- --></p>
+<hr />
+</div>
+<div id="label-free-quantitative-proteomics-data-analysis-workflows" class="section level2" number="1.3">
+<h2><span class="header-section-number">1.3</span> Label-free Quantitative Proteomics Data Analysis Workflows</h2>
+<p><img src="figures/proteomicsDataAnalysis.png" /><!-- --></p>
+<hr />
+</div>
+<div id="cptac-spike-in-study" class="section level2" number="1.4">
+<h2><span class="header-section-number">1.4</span> CPTAC Spike-in Study</h2>
+<p><img src="figures/cptacLayoutLudger.png" width="50%" /></p>
+<ul>
+<li><p>Same trypsin-digested yeast proteome background in each sample</p></li>
+<li><p>Trypsin-digested Sigma UPS1 standard: 48 different human proteins spiked in at 5 different concentrations (treatment A-E)</p></li>
+<li><p>Samples repeatedly run on different instruments in different labs</p></li>
+<li><p>After MaxQuant search with match between runs option</p>
+<ul>
+<li>41% of all proteins are quantified in all samples</li>
+<li>6.6% of all peptides are quantified in all samples</li>
+</ul></li>
+</ul>
+<p><span class="math inline">\(\rightarrow\)</span> vast amount of missingness</p>
+</div>
+<div id="maxquant-output" class="section level2" number="1.5">
+<h2><span class="header-section-number">1.5</span> Maxquant output</h2>
+<p><img src="figures/maxquantOutputDir.png" /><!-- --></p>
+<hr />
+</div>
+</div>
+<div id="import-the-data-in-r" class="section level1" number="2">
+<h1><span class="header-section-number">2</span> Import the data in R</h1>
+<div id="data-infrastructure" class="section level2" number="2.1">
+<h2><span class="header-section-number">2.1</span> Data infrastructure</h2>
+<details>
+<summary>
+Click to see background on data infrastructure used in R to store proteomics data
+</summary>
+<p>
+<ul>
+<li>We use the <code>QFeatures</code> package that provides the infrastructure to
+<ul>
+<li>store,<br />
+</li>
+<li>process,</li>
+<li>manipulate and</li>
+<li>analyse quantitative data/features from mass spectrometry experiments.</li>
+</ul></li>
+<li>It is based on the <code>SummarizedExperiment</code> and <code>MultiAssayExperiment</code> classes.</li>
+</ul>
+<div class="figure">
+<img src="figures/SE.png" alt="Conceptual representation of a `SummarizedExperiment` object.  Assays contain information on the measured omics features (rows) for different samples (columns). The `rowData` contains information on the omics features, the `colData` contains information on the samples, i.e. experimental design etc." width="80%" />
+<p class="caption">
+Conceptual representation of a <code>SummarizedExperiment</code> object. Assays contain information on the measured omics features (rows) for different samples (columns). The <code>rowData</code> contains information on the omics features, the <code>colData</code> contains information on the samples, i.e. experimental design etc.
+</p>
+</div>
+<ul>
+<li><p>Assays in a QFeatures object have a hierarchical relation:</p>
+<ul>
+<li>proteins are composed of peptides,</li>
+<li>themselves produced by spectra</li>
+<li>relations between assays are tracked and recorded throughout data processing</li>
+</ul></li>
+</ul>
+<div class="figure">
+<img src="pda_quantification_preprocessing_noframes_files/figure-html/featuresplot-1.png" alt="Conceptual representation of a `QFeatures` object and the aggregative relation between different assays." width="672" />
+<p class="caption">
+Conceptual representation of a <code>QFeatures</code> object and the aggregative relation between different assays.
+</p>
+</div>
+</p>
+</details>
+</div>
+<div id="import-data-in-r" class="section level2" number="2.2">
+<h2><span class="header-section-number">2.2</span> Import data in R</h2>
+<div id="load-libraries" class="section level3" number="2.2.1">
+<h3><span class="header-section-number">2.2.1</span> Load libraries</h3>
+<details>
+<summary>
+Click to see code
+</summary>
+<p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(tidyverse)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(limma)</span>
+<span id="cb1-3"><a href="#cb1-3" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(QFeatures)</span>
+<span id="cb1-4"><a href="#cb1-4" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(msqrob2)</span>
+<span id="cb1-5"><a href="#cb1-5" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(plotly)</span>
+<span id="cb1-6"><a href="#cb1-6" aria-hidden="true" tabindex="-1"></a><span class="fu">library</span>(ggplot2)</span></code></pre></div>
+</p>
+</details>
+</div>
+<div id="read-data" class="section level3" number="2.2.2">
+<h3><span class="header-section-number">2.2.2</span> Read data</h3>
+<details>
+<summary>
+Click to see background and code
+</summary>
+<p>
+<ol style="list-style-type: decimal">
+<li>We use a peptides.txt file from MS-data quantified with maxquant that contains MS1 intensities summarized at the peptide level.</li>
+</ol>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>peptidesFile <span class="ot">&lt;-</span> <span class="st">&quot;https://raw.githubusercontent.com/statOmics/PDA/data/quantification/fullCptacDatasSetNotForTutorial/peptides.txt&quot;</span></span></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>Maxquant stores the intensity data for the different samples in columnns that start with Intensity. We can retreive the column names with the intensity data with the code below:</li>
+</ol>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a>ecols <span class="ot">&lt;-</span> <span class="fu">grep</span>(<span class="st">&quot;Intensity</span><span class="sc">\\</span><span class="st">.&quot;</span>, <span class="fu">names</span>(<span class="fu">read.delim</span>(peptidesFile)))</span></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>Read the data and store it in QFeatures object</li>
+</ol>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a>pe <span class="ot">&lt;-</span> <span class="fu">readQFeatures</span>(</span>
+<span id="cb4-2"><a href="#cb4-2" aria-hidden="true" tabindex="-1"></a>  <span class="at">table =</span> peptidesFile,</span>
+<span id="cb4-3"><a href="#cb4-3" aria-hidden="true" tabindex="-1"></a>  <span class="at">fnames =</span> <span class="dv">1</span>,</span>
+<span id="cb4-4"><a href="#cb4-4" aria-hidden="true" tabindex="-1"></a>  <span class="at">ecol =</span> ecols,</span>
+<span id="cb4-5"><a href="#cb4-5" aria-hidden="true" tabindex="-1"></a>  <span class="at">name =</span> <span class="st">&quot;peptideRaw&quot;</span>, <span class="at">sep=</span><span class="st">&quot;</span><span class="sc">\t</span><span class="st">&quot;</span>)</span></code></pre></div>
+</p>
+</details>
+</div>
+<div id="explore-object" class="section level3" number="2.2.3">
+<h3><span class="header-section-number">2.2.3</span> Explore object</h3>
+<details>
+<summary>
+Click to see background and code
+</summary>
+<p>
+<ul>
+<li>The rowData contains information on the features (peptides) in the assay. E.g. Sequence, protein, …</li>
+</ul>
+<div class="sourceCode" id="cb5"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb5-1"><a href="#cb5-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rowData</span>(pe[[<span class="st">&quot;peptideRaw&quot;</span>]])</span></code></pre></div>
+<pre><code>## DataFrame with 11466 rows and 143 columns
+##                          Sequence N.term.cleavage.window C.term.cleavage.window
+##                       &lt;character&gt;            &lt;character&gt;            &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK  AAAAGAGGAG...          EHQHDEQKAA...          DSGDAVTKIG...
+## AAAALAGGK               AAAALAGGK          QQLSKAAKAA...          AAALAGGKKS...
+## AAAALAGGKK             AAAALAGGKK          QQLSKAAKAA...          AALAGGKKSK...
+## AAADALSDLEIK        AAADALSDLE...          MPKETPSKAA...          ALSDLEIKDS...
+## AAADALSDLEIKDSK     AAADALSDLE...          MPKETPSKAA...          DLEIKDSKSN...
+## ...                           ...                    ...                    ...
+## YYSIYDLGNNAVGLAK    YYSIYDLGNN...          VGDAFLRKYY...          NNAVGLAKAI...
+## YYTFNGPNYNENETIR    YYTFNGPNYN...          FKDGSYPKYY...          YNENETIRHI...
+## YYTITEVATR             YYTITEVATR          QEWDINERYY...          TITEVATRAK...
+## YYTVFDRDNNR         YYTVFDRDNN...          LGDVFIGRYY...          VFDRDNNRVG...
+## YYTVFDRDNNRVGFAEAAR YYTVFDRDNN...          LGDVFIGRYY...          VGFAEAARL_...
+##                     Amino.acid.before First.amino.acid Second.amino.acid
+##                           &lt;character&gt;      &lt;character&gt;       &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK                  K                A                 A
+## AAAALAGGK                           K                A                 A
+## AAAALAGGKK                          K                A                 A
+## AAADALSDLEIK                        K                A                 A
+## AAADALSDLEIKDSK                     K                A                 A
+## ...                               ...              ...               ...
+## YYSIYDLGNNAVGLAK                    K                Y                 Y
+## YYTFNGPNYNENETIR                    K                Y                 Y
+## YYTITEVATR                          R                Y                 Y
+## YYTVFDRDNNR                         R                Y                 Y
+## YYTVFDRDNNRVGFAEAAR                 R                Y                 Y
+##                     Second.last.amino.acid Last.amino.acid Amino.acid.after
+##                                &lt;character&gt;     &lt;character&gt;      &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK                       T               K                I
+## AAAALAGGK                                G               K                K
+## AAAALAGGKK                               K               K                S
+## AAADALSDLEIK                             I               K                D
+## AAADALSDLEIKDSK                          S               K                S
+## ...                                    ...             ...              ...
+## YYSIYDLGNNAVGLAK                         A               K                A
+## YYTFNGPNYNENETIR                         I               R                H
+## YYTITEVATR                               T               R                A
+## YYTVFDRDNNR                              N               R                V
+## YYTVFDRDNNRVGFAEAAR                      A               R                L
+##                       A.Count   R.Count   N.Count   D.Count   C.Count   Q.Count
+##                     &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK          7         0         0         2         0         0
+## AAAALAGGK                   5         0         0         0         0         0
+## AAAALAGGKK                  5         0         0         0         0         0
+## AAADALSDLEIK                4         0         0         2         0         0
+## AAADALSDLEIKDSK             4         0         0         3         0         0
+## ...                       ...       ...       ...       ...       ...       ...
+## YYSIYDLGNNAVGLAK            2         0         2         1         0         0
+## YYTFNGPNYNENETIR            0         1         4         0         0         0
+## YYTITEVATR                  1         1         0         0         0         0
+## YYTVFDRDNNR                 0         2         2         2         0         0
+## YYTVFDRDNNRVGFAEAAR         3         3         2         2         0         0
+##                       E.Count   G.Count   H.Count   I.Count   L.Count   K.Count
+##                     &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK          0         5         0         0         0         1
+## AAAALAGGK                   0         2         0         0         1         1
+## AAAALAGGKK                  0         2         0         0         1         2
+## AAADALSDLEIK                1         0         0         1         2         1
+## AAADALSDLEIKDSK             1         0         0         1         2         2
+## ...                       ...       ...       ...       ...       ...       ...
+## YYSIYDLGNNAVGLAK            0         2         0         1         2         1
+## YYTFNGPNYNENETIR            2         1         0         1         0         0
+## YYTITEVATR                  1         0         0         1         0         0
+## YYTVFDRDNNR                 0         0         0         0         0         0
+## YYTVFDRDNNRVGFAEAAR         1         1         0         0         0         0
+##                       M.Count   F.Count   P.Count   S.Count   T.Count   W.Count
+##                     &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK          0         0         0         1         1         0
+## AAAALAGGK                   0         0         0         0         0         0
+## AAAALAGGKK                  0         0         0         0         0         0
+## AAADALSDLEIK                0         0         0         1         0         0
+## AAADALSDLEIKDSK             0         0         0         2         0         0
+## ...                       ...       ...       ...       ...       ...       ...
+## YYSIYDLGNNAVGLAK            0         0         0         1         0         0
+## YYTFNGPNYNENETIR            0         1         1         0         2         0
+## YYTITEVATR                  0         0         0         0         3         0
+## YYTVFDRDNNR                 0         1         0         0         1         0
+## YYTVFDRDNNRVGFAEAAR         0         2         0         0         1         0
+##                       Y.Count   V.Count   U.Count    Length Missed.cleavages
+##                     &lt;integer&gt; &lt;integer&gt; &lt;integer&gt; &lt;integer&gt;        &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK          0         1         0        18                0
+## AAAALAGGK                   0         0         0         9                0
+## AAAALAGGKK                  0         0         0        10                1
+## AAADALSDLEIK                0         0         0        12                0
+## AAADALSDLEIKDSK             0         0         0        15                1
+## ...                       ...       ...       ...       ...              ...
+## YYSIYDLGNNAVGLAK            3         1         0        16                0
+## YYTFNGPNYNENETIR            3         0         0        16                0
+## YYTITEVATR                  2         1         0        10                0
+## YYTVFDRDNNR                 2         1         0        11                1
+## YYTVFDRDNNRVGFAEAAR         2         2         0        19                2
+##                          Mass      Proteins Leading.razor.protein
+##                     &lt;numeric&gt;   &lt;character&gt;           &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK   1445.675 sp|P38915|...         sp|P38915|...
+## AAAALAGGK             728.418 sp|Q3E792|...         sp|Q3E792|...
+## AAAALAGGKK            856.513 sp|Q3E792|...         sp|Q3E792|...
+## AAADALSDLEIK         1215.635 sp|P09938|...         sp|P09938|...
+## AAADALSDLEIKDSK      1545.789 sp|P09938|...         sp|P09938|...
+## ...                       ...           ...                   ...
+## YYSIYDLGNNAVGLAK      1759.88 sp|P07267|...         sp|P07267|...
+## YYTFNGPNYNENETIR      1993.88 sp|Q00955|...         sp|Q00955|...
+## YYTITEVATR            1215.61 sp|P38891|...         sp|P38891|...
+## YYTVFDRDNNR           1461.66 P07339ups|...         P07339ups|...
+## YYTVFDRDNNRVGFAEAAR   2263.08 P07339ups|...         P07339ups|...
+##                     Start.position End.position Unique..Groups.
+##                          &lt;integer&gt;    &lt;integer&gt;     &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK              97          114             yes
+## AAAALAGGK                       13           21             yes
+## AAAALAGGKK                      13           22             yes
+## AAADALSDLEIK                     9           20             yes
+## AAADALSDLEIKDSK                  9           23             yes
+## ...                            ...          ...             ...
+## YYSIYDLGNNAVGLAK               388          403             yes
+## YYTFNGPNYNENETIR              1275         1290             yes
+## YYTITEVATR                     311          320             yes
+## YYTVFDRDNNR                    225          235             yes
+## YYTVFDRDNNRVGFAEAAR            225          243             yes
+##                     Unique..Proteins.     Charges        PEP     Score
+##                           &lt;character&gt; &lt;character&gt;  &lt;numeric&gt; &lt;numeric&gt;
+## AAAAGAGGAGDSGDAVTK                yes           2 1.1843e-05    82.942
+## AAAALAGGK                          no           2 7.4562e-06   134.810
+## AAAALAGGKK                         no           2 3.3094e-09   143.730
+## AAADALSDLEIK                      yes           2 9.1593e-23   182.230
+## AAADALSDLEIKDSK                   yes           3 1.5319e-04    73.927
+## ...                               ...         ...        ...       ...
+## YYSIYDLGNNAVGLAK                  yes           2 7.7415e-37   174.240
+## YYTFNGPNYNENETIR                  yes           2 4.2208e-21   147.750
+## YYTITEVATR                        yes           2 1.3566e-04   109.160
+## YYTVFDRDNNR                       yes           2 6.1425e-04   110.930
+## YYTVFDRDNNRVGFAEAAR               yes           3 8.9859e-04    59.728
+##                     Identification.type.6A_1 Identification.type.6A_2
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...                 By MS/MS
+## AAAALAGGK                      By matchin...            By matchin...
+## AAAALAGGKK                     By matchin...            By matchin...
+## AAADALSDLEIK                        By MS/MS                 By MS/MS
+## AAADALSDLEIKDSK                By matchin...            By matchin...
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK               By matchin...            By matchin...
+## YYTFNGPNYNENETIR               By matchin...            By matchin...
+## YYTITEVATR                          By MS/MS            By matchin...
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6A_3 Identification.type.6A_4
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...                 By MS/MS
+## AAAALAGGK                      By matchin...                 By MS/MS
+## AAAALAGGKK                     By matchin...                 By MS/MS
+## AAADALSDLEIK                   By matchin...                 By MS/MS
+## AAADALSDLEIKDSK                By matchin...                 By MS/MS
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK               By matchin...                 By MS/MS
+## YYTFNGPNYNENETIR               By matchin...                 By MS/MS
+## YYTITEVATR                     By matchin...            By matchin...
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6A_5 Identification.type.6A_6
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...            By matchin...
+## AAAALAGGK                      By matchin...            By matchin...
+## AAAALAGGKK                     By matchin...            By matchin...
+## AAADALSDLEIK                        By MS/MS                 By MS/MS
+## AAADALSDLEIKDSK                     By MS/MS                 By MS/MS
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK                    By MS/MS                 By MS/MS
+## YYTFNGPNYNENETIR                    By MS/MS                 By MS/MS
+## YYTITEVATR                     By matchin...            By matchin...
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6A_7 Identification.type.6A_8
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK                  By MS/MS                 By MS/MS
+## AAAALAGGK                           By MS/MS                 By MS/MS
+## AAAALAGGKK                          By MS/MS                 By MS/MS
+## AAADALSDLEIK                        By MS/MS            By matchin...
+## AAADALSDLEIKDSK                     By MS/MS                 By MS/MS
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK               By matchin...            By matchin...
+## YYTFNGPNYNENETIR               By matchin...            By matchin...
+## YYTITEVATR                          By MS/MS            By matchin...
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6A_9 Identification.type.6B_1
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK                  By MS/MS            By matchin...
+## AAAALAGGK                           By MS/MS                 By MS/MS
+## AAAALAGGKK                          By MS/MS            By matchin...
+## AAADALSDLEIK                        By MS/MS                 By MS/MS
+## AAADALSDLEIKDSK                     By MS/MS            By matchin...
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK               By matchin...            By matchin...
+## YYTFNGPNYNENETIR               By matchin...            By matchin...
+## YYTITEVATR                     By matchin...                 By MS/MS
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6B_2 Identification.type.6B_3
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...            By matchin...
+## AAAALAGGK                      By matchin...            By matchin...
+## AAAALAGGKK                          By MS/MS                 By MS/MS
+## AAADALSDLEIK                        By MS/MS            By matchin...
+## AAADALSDLEIKDSK                By matchin...            By matchin...
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK               By matchin...            By matchin...
+## YYTFNGPNYNENETIR               By matchin...            By matchin...
+## YYTITEVATR                     By matchin...            By matchin...
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6B_4 Identification.type.6B_5
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...            By matchin...
+## AAAALAGGK                      By matchin...            By matchin...
+## AAAALAGGKK                     By matchin...            By matchin...
+## AAADALSDLEIK                        By MS/MS                 By MS/MS
+## AAADALSDLEIKDSK                     By MS/MS                 By MS/MS
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK                    By MS/MS            By matchin...
+## YYTFNGPNYNENETIR                    By MS/MS                 By MS/MS
+## YYTITEVATR                          By MS/MS                 By MS/MS
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6B_6 Identification.type.6B_7
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...            By matchin...
+## AAAALAGGK                      By matchin...                 By MS/MS
+## AAAALAGGKK                     By matchin...                 By MS/MS
+## AAADALSDLEIK                        By MS/MS                 By MS/MS
+## AAADALSDLEIKDSK                     By MS/MS                 By MS/MS
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK               By matchin...            By matchin...
+## YYTFNGPNYNENETIR                    By MS/MS            By matchin...
+## YYTITEVATR                     By matchin...            By matchin...
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6B_8 Identification.type.6B_9
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK                  By MS/MS                 By MS/MS
+## AAAALAGGK                           By MS/MS                 By MS/MS
+## AAAALAGGKK                          By MS/MS                 By MS/MS
+## AAADALSDLEIK                   By matchin...            By matchin...
+## AAADALSDLEIKDSK                     By MS/MS                 By MS/MS
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK               By matchin...            By matchin...
+## YYTFNGPNYNENETIR               By matchin...            By matchin...
+## YYTITEVATR                          By MS/MS            By matchin...
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6C_1 Identification.type.6C_2
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...            By matchin...
+## AAAALAGGK                      By matchin...                 By MS/MS
+## AAAALAGGKK                     By matchin...                 By MS/MS
+## AAADALSDLEIK                        By MS/MS            By matchin...
+## AAADALSDLEIKDSK                By matchin...            By matchin...
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK               By matchin...            By matchin...
+## YYTFNGPNYNENETIR               By matchin...            By matchin...
+## YYTITEVATR                     By matchin...            By matchin...
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6C_3 Identification.type.6C_4
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...            By matchin...
+## AAAALAGGK                      By matchin...                 By MS/MS
+## AAAALAGGKK                     By matchin...                 By MS/MS
+## AAADALSDLEIK                        By MS/MS                 By MS/MS
+## AAADALSDLEIKDSK                By matchin...                 By MS/MS
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK               By matchin...                 By MS/MS
+## YYTFNGPNYNENETIR               By matchin...                 By MS/MS
+## YYTITEVATR                          By MS/MS            By matchin...
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6C_5 Identification.type.6C_6
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK                  By MS/MS            By matchin...
+## AAAALAGGK                      By matchin...            By matchin...
+## AAAALAGGKK                     By matchin...            By matchin...
+## AAADALSDLEIK                        By MS/MS                 By MS/MS
+## AAADALSDLEIKDSK                     By MS/MS                 By MS/MS
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK                    By MS/MS                 By MS/MS
+## YYTFNGPNYNENETIR               By matchin...            By matchin...
+## YYTITEVATR                     By matchin...            By matchin...
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6C_7 Identification.type.6C_8
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK                  By MS/MS            By matchin...
+## AAAALAGGK                           By MS/MS                 By MS/MS
+## AAAALAGGKK                          By MS/MS                 By MS/MS
+## AAADALSDLEIK                   By matchin...                 By MS/MS
+## AAADALSDLEIKDSK                     By MS/MS                 By MS/MS
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK               By matchin...            By matchin...
+## YYTFNGPNYNENETIR               By matchin...            By matchin...
+## YYTITEVATR                     By matchin...                 By MS/MS
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6C_9 Identification.type.6D_1
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...            By matchin...
+## AAAALAGGK                           By MS/MS            By matchin...
+## AAAALAGGKK                          By MS/MS            By matchin...
+## AAADALSDLEIK                        By MS/MS                 By MS/MS
+## AAADALSDLEIKDSK                     By MS/MS                 By MS/MS
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK               By matchin...            By matchin...
+## YYTFNGPNYNENETIR               By matchin...            By matchin...
+## YYTITEVATR                          By MS/MS            By matchin...
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6D_2 Identification.type.6D_3
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...            By matchin...
+## AAAALAGGK                      By matchin...            By matchin...
+## AAAALAGGKK                     By matchin...            By matchin...
+## AAADALSDLEIK                   By matchin...            By matchin...
+## AAADALSDLEIKDSK                     By MS/MS            By matchin...
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK               By matchin...            By matchin...
+## YYTFNGPNYNENETIR               By matchin...            By matchin...
+## YYTITEVATR                          By MS/MS                 By MS/MS
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6D_4 Identification.type.6D_5
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...            By matchin...
+## AAAALAGGK                      By matchin...            By matchin...
+## AAAALAGGKK                          By MS/MS            By matchin...
+## AAADALSDLEIK                        By MS/MS                 By MS/MS
+## AAADALSDLEIKDSK                     By MS/MS                 By MS/MS
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK                    By MS/MS                 By MS/MS
+## YYTFNGPNYNENETIR                    By MS/MS                 By MS/MS
+## YYTITEVATR                     By matchin...            By matchin...
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6D_6 Identification.type.6D_7
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK                  By MS/MS            By matchin...
+## AAAALAGGK                      By matchin...                 By MS/MS
+## AAAALAGGKK                     By matchin...                 By MS/MS
+## AAADALSDLEIK                        By MS/MS            By matchin...
+## AAADALSDLEIKDSK                By matchin...                 By MS/MS
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK                    By MS/MS            By matchin...
+## YYTFNGPNYNENETIR                    By MS/MS            By matchin...
+## YYTITEVATR                     By matchin...            By matchin...
+## YYTVFDRDNNR                    By matchin...                 By MS/MS
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6D_8 Identification.type.6D_9
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...            By matchin...
+## AAAALAGGK                           By MS/MS                 By MS/MS
+## AAAALAGGKK                          By MS/MS                 By MS/MS
+## AAADALSDLEIK                        By MS/MS                 By MS/MS
+## AAADALSDLEIKDSK                     By MS/MS                 By MS/MS
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK               By matchin...            By matchin...
+## YYTFNGPNYNENETIR               By matchin...            By matchin...
+## YYTITEVATR                          By MS/MS            By matchin...
+## YYTVFDRDNNR                         By MS/MS            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6E_1 Identification.type.6E_2
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...            By matchin...
+## AAAALAGGK                      By matchin...            By matchin...
+## AAAALAGGKK                     By matchin...            By matchin...
+## AAADALSDLEIK                        By MS/MS                 By MS/MS
+## AAADALSDLEIKDSK                     By MS/MS                 By MS/MS
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK               By matchin...            By matchin...
+## YYTFNGPNYNENETIR               By matchin...            By matchin...
+## YYTITEVATR                     By matchin...            By matchin...
+## YYTVFDRDNNR                    By matchin...            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6E_3 Identification.type.6E_4
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...            By matchin...
+## AAAALAGGK                      By matchin...                 By MS/MS
+## AAAALAGGKK                     By matchin...            By matchin...
+## AAADALSDLEIK                   By matchin...                 By MS/MS
+## AAADALSDLEIKDSK                     By MS/MS            By matchin...
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK               By matchin...                 By MS/MS
+## YYTFNGPNYNENETIR               By matchin...                 By MS/MS
+## YYTITEVATR                     By matchin...            By matchin...
+## YYTVFDRDNNR                    By matchin...                 By MS/MS
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6E_5 Identification.type.6E_6
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...            By matchin...
+## AAAALAGGK                      By matchin...            By matchin...
+## AAAALAGGKK                     By matchin...            By matchin...
+## AAADALSDLEIK                        By MS/MS            By matchin...
+## AAADALSDLEIKDSK                     By MS/MS                 By MS/MS
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK                    By MS/MS                 By MS/MS
+## YYTFNGPNYNENETIR                    By MS/MS                 By MS/MS
+## YYTITEVATR                     By matchin...            By matchin...
+## YYTVFDRDNNR                         By MS/MS            By matchin...
+## YYTVFDRDNNRVGFAEAAR            By matchin...                 By MS/MS
+##                     Identification.type.6E_7 Identification.type.6E_8
+##                                  &lt;character&gt;              &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...            By matchin...
+## AAAALAGGK                           By MS/MS                 By MS/MS
+## AAAALAGGKK                          By MS/MS                 By MS/MS
+## AAADALSDLEIK                        By MS/MS                 By MS/MS
+## AAADALSDLEIKDSK                By matchin...                 By MS/MS
+## ...                                      ...                      ...
+## YYSIYDLGNNAVGLAK               By matchin...            By matchin...
+## YYTFNGPNYNENETIR               By matchin...            By matchin...
+## YYTITEVATR                     By matchin...            By matchin...
+## YYTVFDRDNNR                         By MS/MS                 By MS/MS
+## YYTVFDRDNNRVGFAEAAR            By matchin...            By matchin...
+##                     Identification.type.6E_9 Experiment.6A_1 Experiment.6A_2
+##                                  &lt;character&gt;       &lt;integer&gt;       &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK             By matchin...              NA               1
+## AAAALAGGK                           By MS/MS              NA               1
+## AAAALAGGKK                          By MS/MS              NA               1
+## AAADALSDLEIK                        By MS/MS               1               1
+## AAADALSDLEIKDSK                     By MS/MS               1               1
+## ...                                      ...             ...             ...
+## YYSIYDLGNNAVGLAK               By matchin...              NA              NA
+## YYTFNGPNYNENETIR                    By MS/MS              NA              NA
+## YYTITEVATR                     By matchin...               1              NA
+## YYTVFDRDNNR                         By MS/MS              NA              NA
+## YYTVFDRDNNRVGFAEAAR            By matchin...              NA              NA
+##                     Experiment.6A_3 Experiment.6A_4 Experiment.6A_5
+##                           &lt;integer&gt;       &lt;integer&gt;       &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK               NA               1               1
+## AAAALAGGK                         2               1               1
+## AAAALAGGKK                       NA               1              NA
+## AAADALSDLEIK                      1               1               1
+## AAADALSDLEIKDSK                  NA               1               1
+## ...                             ...             ...             ...
+## YYSIYDLGNNAVGLAK                 NA               1               1
+## YYTFNGPNYNENETIR                 NA               1               1
+## YYTITEVATR                        1              NA              NA
+## YYTVFDRDNNR                      NA              NA              NA
+## YYTVFDRDNNRVGFAEAAR              NA              NA              NA
+##                     Experiment.6A_6 Experiment.6A_7 Experiment.6A_8
+##                           &lt;integer&gt;       &lt;integer&gt;       &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK                1               1               1
+## AAAALAGGK                         1               2               1
+## AAAALAGGKK                        1               1               1
+## AAADALSDLEIK                      1               1               1
+## AAADALSDLEIKDSK                   1               1               1
+## ...                             ...             ...             ...
+## YYSIYDLGNNAVGLAK                  1              NA              NA
+## YYTFNGPNYNENETIR                  1               1              NA
+## YYTITEVATR                        1               1              NA
+## YYTVFDRDNNR                      NA              NA              NA
+## YYTVFDRDNNRVGFAEAAR              NA              NA              NA
+##                     Experiment.6A_9 Experiment.6B_1 Experiment.6B_2
+##                           &lt;integer&gt;       &lt;integer&gt;       &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK                1              NA              NA
+## AAAALAGGK                         1               1               1
+## AAAALAGGKK                        1              NA               1
+## AAADALSDLEIK                      1               1               1
+## AAADALSDLEIKDSK                   1              NA               1
+## ...                             ...             ...             ...
+## YYSIYDLGNNAVGLAK                 NA              NA              NA
+## YYTFNGPNYNENETIR                  1              NA              NA
+## YYTITEVATR                       NA               1               1
+## YYTVFDRDNNR                      NA              NA              NA
+## YYTVFDRDNNRVGFAEAAR              NA              NA              NA
+##                     Experiment.6B_3 Experiment.6B_4 Experiment.6B_5
+##                           &lt;integer&gt;       &lt;integer&gt;       &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK               NA              NA               1
+## AAAALAGGK                         1               2               1
+## AAAALAGGKK                        1               1              NA
+## AAADALSDLEIK                      1               1               1
+## AAADALSDLEIKDSK                  NA               1               1
+## ...                             ...             ...             ...
+## YYSIYDLGNNAVGLAK                 NA               1               1
+## YYTFNGPNYNENETIR                 NA               1               1
+## YYTITEVATR                        1               1               1
+## YYTVFDRDNNR                      NA              NA              NA
+## YYTVFDRDNNRVGFAEAAR              NA              NA              NA
+##                     Experiment.6B_6 Experiment.6B_7 Experiment.6B_8
+##                           &lt;integer&gt;       &lt;integer&gt;       &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK                1              NA               1
+## AAAALAGGK                        NA               2               1
+## AAAALAGGKK                       NA               1               1
+## AAADALSDLEIK                      1               1               1
+## AAADALSDLEIKDSK                   1               1               1
+## ...                             ...             ...             ...
+## YYSIYDLGNNAVGLAK                  1              NA              NA
+## YYTFNGPNYNENETIR                  1               1              NA
+## YYTITEVATR                        1              NA               1
+## YYTVFDRDNNR                      NA              NA              NA
+## YYTVFDRDNNRVGFAEAAR              NA              NA              NA
+##                     Experiment.6B_9 Experiment.6C_1 Experiment.6C_2
+##                           &lt;integer&gt;       &lt;integer&gt;       &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK                1              NA              NA
+## AAAALAGGK                         2              NA               1
+## AAAALAGGKK                        1              NA               1
+## AAADALSDLEIK                      1               1               1
+## AAADALSDLEIKDSK                   1               1               1
+## ...                             ...             ...             ...
+## YYSIYDLGNNAVGLAK                 NA              NA              NA
+## YYTFNGPNYNENETIR                 NA              NA              NA
+## YYTITEVATR                       NA               1               1
+## YYTVFDRDNNR                      NA              NA              NA
+## YYTVFDRDNNRVGFAEAAR              NA              NA              NA
+##                     Experiment.6C_3 Experiment.6C_4 Experiment.6C_5
+##                           &lt;integer&gt;       &lt;integer&gt;       &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK               NA               1               1
+## AAAALAGGK                         2               2              NA
+## AAAALAGGKK                       NA               1              NA
+## AAADALSDLEIK                      1               1               1
+## AAADALSDLEIKDSK                   1               1               1
+## ...                             ...             ...             ...
+## YYSIYDLGNNAVGLAK                 NA               1               1
+## YYTFNGPNYNENETIR                 NA               1               1
+## YYTITEVATR                        1               1              NA
+## YYTVFDRDNNR                      NA              NA              NA
+## YYTVFDRDNNRVGFAEAAR              NA              NA              NA
+##                     Experiment.6C_6 Experiment.6C_7 Experiment.6C_8
+##                           &lt;integer&gt;       &lt;integer&gt;       &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK                1               1               1
+## AAAALAGGK                        NA               2               1
+## AAAALAGGKK                       NA               1               1
+## AAADALSDLEIK                      1               1               1
+## AAADALSDLEIKDSK                   1               1               1
+## ...                             ...             ...             ...
+## YYSIYDLGNNAVGLAK                  1              NA              NA
+## YYTFNGPNYNENETIR                  1               1               1
+## YYTITEVATR                        1              NA               1
+## YYTVFDRDNNR                       1              NA               1
+## YYTVFDRDNNRVGFAEAAR              NA              NA              NA
+##                     Experiment.6C_9 Experiment.6D_1 Experiment.6D_2
+##                           &lt;integer&gt;       &lt;integer&gt;       &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK                1              NA              NA
+## AAAALAGGK                         1              NA               1
+## AAAALAGGKK                        1              NA              NA
+## AAADALSDLEIK                      1               1               1
+## AAADALSDLEIKDSK                   1               1               1
+## ...                             ...             ...             ...
+## YYSIYDLGNNAVGLAK                 NA              NA              NA
+## YYTFNGPNYNENETIR                  1              NA              NA
+## YYTITEVATR                        1              NA               1
+## YYTVFDRDNNR                      NA              NA              NA
+## YYTVFDRDNNRVGFAEAAR              NA              NA              NA
+##                     Experiment.6D_3 Experiment.6D_4 Experiment.6D_5
+##                           &lt;integer&gt;       &lt;integer&gt;       &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK               NA               1               1
+## AAAALAGGK                         1               1               1
+## AAAALAGGKK                       NA               1              NA
+## AAADALSDLEIK                      1               1               1
+## AAADALSDLEIKDSK                   1               1               1
+## ...                             ...             ...             ...
+## YYSIYDLGNNAVGLAK                 NA               1               1
+## YYTFNGPNYNENETIR                 NA               1               1
+## YYTITEVATR                        1               1               1
+## YYTVFDRDNNR                      NA               1               1
+## YYTVFDRDNNRVGFAEAAR              NA               1              NA
+##                     Experiment.6D_6 Experiment.6D_7 Experiment.6D_8
+##                           &lt;integer&gt;       &lt;integer&gt;       &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK                1               1              NA
+## AAAALAGGK                        NA               2               1
+## AAAALAGGKK                       NA               1               1
+## AAADALSDLEIK                      1               1               1
+## AAADALSDLEIKDSK                   1               1               1
+## ...                             ...             ...             ...
+## YYSIYDLGNNAVGLAK                  1               1              NA
+## YYTFNGPNYNENETIR                  1               1               1
+## YYTITEVATR                        1              NA               1
+## YYTVFDRDNNR                       1               1               1
+## YYTVFDRDNNRVGFAEAAR              NA              NA              NA
+##                     Experiment.6D_9 Experiment.6E_1 Experiment.6E_2
+##                           &lt;integer&gt;       &lt;integer&gt;       &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK               NA              NA               1
+## AAAALAGGK                         2              NA               1
+## AAAALAGGKK                        1              NA              NA
+## AAADALSDLEIK                      1               1               1
+## AAADALSDLEIKDSK                   1               1               1
+## ...                             ...             ...             ...
+## YYSIYDLGNNAVGLAK                 NA              NA              NA
+## YYTFNGPNYNENETIR                  1              NA              NA
+## YYTITEVATR                       NA              NA               1
+## YYTVFDRDNNR                       1               1              NA
+## YYTVFDRDNNRVGFAEAAR              NA              NA              NA
+##                     Experiment.6E_3 Experiment.6E_4 Experiment.6E_5
+##                           &lt;integer&gt;       &lt;integer&gt;       &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK               NA              NA               1
+## AAAALAGGK                         2               2               1
+## AAAALAGGKK                       NA               1              NA
+## AAADALSDLEIK                      1               1               1
+## AAADALSDLEIKDSK                   1               1               1
+## ...                             ...             ...             ...
+## YYSIYDLGNNAVGLAK                  1               1               1
+## YYTFNGPNYNENETIR                 NA               1               1
+## YYTITEVATR                        1               1               1
+## YYTVFDRDNNR                       1               1               1
+## YYTVFDRDNNRVGFAEAAR              NA               1               1
+##                     Experiment.6E_6 Experiment.6E_7 Experiment.6E_8
+##                           &lt;integer&gt;       &lt;integer&gt;       &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK                1              NA              NA
+## AAAALAGGK                        NA               2               2
+## AAAALAGGKK                       NA               1               1
+## AAADALSDLEIK                      1               1               1
+## AAADALSDLEIKDSK                   1              NA               1
+## ...                             ...             ...             ...
+## YYSIYDLGNNAVGLAK                  1              NA              NA
+## YYTFNGPNYNENETIR                  1               1               1
+## YYTITEVATR                       NA              NA              NA
+## YYTVFDRDNNR                       1               1               1
+## YYTVFDRDNNRVGFAEAAR               1               1               1
+##                     Experiment.6E_9 Intensity     Reverse Potential.contaminant
+##                           &lt;integer&gt; &lt;numeric&gt; &lt;character&gt;           &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK               NA   1190800                                  
+## AAAALAGGK                         1 280990000                                  
+## AAAALAGGKK                        1  33360000                                  
+## AAADALSDLEIK                      1  54622000                                  
+## AAADALSDLEIKDSK                   1  18910000                                  
+## ...                             ...       ...         ...                   ...
+## YYSIYDLGNNAVGLAK                 NA   2145900                                  
+## YYTFNGPNYNENETIR                  1   5608800                                  
+## YYTITEVATR                       NA  13034000                                  
+## YYTVFDRDNNR                       1   8702500                                  
+## YYTVFDRDNNRVGFAEAAR               1   2391100                                  
+##                            id Protein.group.IDs Mod..peptide.IDs  Evidence.IDs
+##                     &lt;integer&gt;       &lt;character&gt;      &lt;character&gt;   &lt;character&gt;
+## AAAAGAGGAGDSGDAVTK          0               859                0 0;1;2;3;4;...
+## AAAALAGGK                   1               230                1 24;25;26;2...
+## AAAALAGGKK                  2               230                2 74;75;76;7...
+## AAADALSDLEIK                3               229                3 99;100;101...
+## AAADALSDLEIKDSK             4               229                4 144;145;14...
+## ...                       ...               ...              ...           ...
+## YYSIYDLGNNAVGLAK        11461               196            12240 331367;331...
+## YYTFNGPNYNENETIR        11462              1254            12241 331384;331...
+## YYTITEVATR              11463               854            12242 331411;331...
+## YYTVFDRDNNR             11464                34            12243 331439;331...
+## YYTVFDRDNNRVGFAEAAR     11465                34            12244 331455;331...
+##                         MS.MS.IDs Best.MS.MS Oxidation..M..site.IDs MS.MS.Count
+##                       &lt;character&gt;  &lt;integer&gt;            &lt;character&gt;   &lt;integer&gt;
+## AAAAGAGGAGDSGDAVTK  0;1;2;3;4;...          0                                 10
+## AAAALAGGK           10;11;12;1...         21                                 18
+## AAAALAGGKK          30;31;32;3...         31                                 21
+## AAADALSDLEIK        51;52;53;5...         72                                 29
+## AAADALSDLEIKDSK     85;86;87;8...         94                                 32
+## ...                           ...        ...                    ...         ...
+## YYSIYDLGNNAVGLAK    169138;169...     169147                                 13
+## YYTFNGPNYNENETIR    169151;169...     169159                                 14
+## YYTITEVATR          169165;169...     169173                                 12
+## YYTVFDRDNNR         169177;169...     169180                                  7
+## YYTVFDRDNNRVGFAEAAR        169184     169184                                  1</code></pre>
+<ul>
+<li>The colData contains information on the samples</li>
+</ul>
+<div class="sourceCode" id="cb7"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb7-1"><a href="#cb7-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(pe)</span></code></pre></div>
+<pre><code>## DataFrame with 45 rows and 0 columns</code></pre>
+<ul>
+<li>No information is stored yet on the design.</li>
+</ul>
+<div class="sourceCode" id="cb9"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb9-1"><a href="#cb9-1" aria-hidden="true" tabindex="-1"></a>pe <span class="sc">%&gt;%</span> colnames</span></code></pre></div>
+<pre><code>## CharacterList of length 1
+## [[&quot;peptideRaw&quot;]] Intensity.6A_1 Intensity.6A_2 ... Intensity.6E_9</code></pre>
+<ul>
+<li><p>Note, that the sample names include the spike-in condition.</p></li>
+<li><p>They also end on a number.</p>
+<ul>
+<li>1-3 is from lab 1,</li>
+<li>4-6 from lab 2 and</li>
+<li>7-9 from lab 3.</li>
+</ul></li>
+<li><p>We update the colData with information on the design</p></li>
+</ul>
+<div class="sourceCode" id="cb11"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb11-1"><a href="#cb11-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(pe)<span class="sc">$</span>lab <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">rep</span>(<span class="fu">paste0</span>(<span class="st">&quot;lab&quot;</span>,<span class="dv">1</span><span class="sc">:</span><span class="dv">3</span>),<span class="at">each=</span><span class="dv">3</span>),<span class="dv">5</span>) <span class="sc">%&gt;%</span> as.factor</span>
+<span id="cb11-2"><a href="#cb11-2" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(pe)<span class="sc">$</span>condition <span class="ot">&lt;-</span> pe[[<span class="st">&quot;peptideRaw&quot;</span>]] <span class="sc">%&gt;%</span> colnames <span class="sc">%&gt;%</span> <span class="fu">substr</span>(<span class="dv">12</span>,<span class="dv">12</span>) <span class="sc">%&gt;%</span> as.factor</span>
+<span id="cb11-3"><a href="#cb11-3" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(pe)<span class="sc">$</span>spikeConcentration <span class="ot">&lt;-</span> <span class="fu">rep</span>(<span class="fu">c</span>(<span class="at">A =</span> <span class="fl">0.25</span>, <span class="at">B =</span> <span class="fl">0.74</span>, <span class="at">C =</span> <span class="fl">2.22</span>, <span class="at">D =</span> <span class="fl">6.67</span>, <span class="at">E =</span> <span class="dv">20</span>),<span class="at">each =</span> <span class="dv">9</span>)</span></code></pre></div>
+<ul>
+<li>We explore the colData again</li>
+</ul>
+<div class="sourceCode" id="cb12"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb12-1"><a href="#cb12-1" aria-hidden="true" tabindex="-1"></a><span class="fu">colData</span>(pe)</span></code></pre></div>
+<pre><code>## DataFrame with 45 rows and 3 columns
+##                     lab condition spikeConcentration
+##                &lt;factor&gt;  &lt;factor&gt;          &lt;numeric&gt;
+## Intensity.6A_1     lab1         A               0.25
+## Intensity.6A_2     lab1         A               0.25
+## Intensity.6A_3     lab1         A               0.25
+## Intensity.6A_4     lab2         A               0.25
+## Intensity.6A_5     lab2         A               0.25
+## ...                 ...       ...                ...
+## Intensity.6E_5     lab2         E                 20
+## Intensity.6E_6     lab2         E                 20
+## Intensity.6E_7     lab3         E                 20
+## Intensity.6E_8     lab3         E                 20
+## Intensity.6E_9     lab3         E                 20</code></pre>
+</p>
+</details>
+<hr />
+</div>
+</div>
+</div>
+<div id="preprocessing" class="section level1" number="3">
+<h1><span class="header-section-number">3</span> Preprocessing</h1>
+<div id="log-transformation" class="section level2" number="3.1">
+<h2><span class="header-section-number">3.1</span> Log-transformation</h2>
+<div id="explore-the-data-with-plots" class="section level3" number="3.1.1">
+<h3><span class="header-section-number">3.1.1</span> Explore the data with plots</h3>
+<p>Peptide AALEELVK from spiked-in UPS protein P12081. We only show data from lab1.</p>
+<details>
+<summary>
+Click to see code to make plot
+</summary>
+<p>
+<div class="sourceCode" id="cb14"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb14-1"><a href="#cb14-1" aria-hidden="true" tabindex="-1"></a>subset <span class="ot">&lt;-</span> pe[<span class="st">&quot;AALEELVK&quot;</span>,<span class="fu">colData</span>(pe)<span class="sc">$</span>lab<span class="sc">==</span><span class="st">&quot;lab1&quot;</span>]</span>
+<span id="cb14-2"><a href="#cb14-2" aria-hidden="true" tabindex="-1"></a>plotWhyLog <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">concentration =</span> <span class="fu">colData</span>(subset)<span class="sc">$</span>spikeConcentration,</span>
+<span id="cb14-3"><a href="#cb14-3" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> <span class="fu">assay</span>(subset[[<span class="st">&quot;peptideRaw&quot;</span>]]) <span class="sc">%&gt;%</span> c</span>
+<span id="cb14-4"><a href="#cb14-4" aria-hidden="true" tabindex="-1"></a>           ) <span class="sc">%&gt;%</span> </span>
+<span id="cb14-5"><a href="#cb14-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(concentration, y)) <span class="sc">+</span></span>
+<span id="cb14-6"><a href="#cb14-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span></span>
+<span id="cb14-7"><a href="#cb14-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;concentration (fmol/l)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb14-8"><a href="#cb14-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;peptide AALEELVK in lab1&quot;</span>)</span></code></pre></div>
+</p>
+</details>
+<div class="sourceCode" id="cb15"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb15-1"><a href="#cb15-1" aria-hidden="true" tabindex="-1"></a>plotWhyLog</span></code></pre></div>
+<p><img src="pda_quantification_preprocessing_noframes_files/figure-html/unnamed-chunk-18-1.png" width="672" /></p>
+<ul>
+<li>Variance increases with the mean <span class="math inline">\(\rightarrow\)</span> Multiplicative error structure</li>
+</ul>
+<details>
+<summary>
+Click to see code to make plot
+</summary>
+<p>
+<div class="sourceCode" id="cb16"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb16-1"><a href="#cb16-1" aria-hidden="true" tabindex="-1"></a>plotLog <span class="ot">&lt;-</span> <span class="fu">data.frame</span>(<span class="at">concentration =</span> <span class="fu">colData</span>(subset)<span class="sc">$</span>spikeConcentration,</span>
+<span id="cb16-2"><a href="#cb16-2" aria-hidden="true" tabindex="-1"></a>           <span class="at">y =</span> <span class="fu">assay</span>(subset[[<span class="st">&quot;peptideRaw&quot;</span>]]) <span class="sc">%&gt;%</span> c</span>
+<span id="cb16-3"><a href="#cb16-3" aria-hidden="true" tabindex="-1"></a>           ) <span class="sc">%&gt;%</span> </span>
+<span id="cb16-4"><a href="#cb16-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(concentration, y)) <span class="sc">+</span></span>
+<span id="cb16-5"><a href="#cb16-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_point</span>() <span class="sc">+</span> </span>
+<span id="cb16-6"><a href="#cb16-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_x_continuous</span>(<span class="at">trans=</span><span class="st">&#39;log2&#39;</span>) <span class="sc">+</span> </span>
+<span id="cb16-7"><a href="#cb16-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">scale_y_continuous</span>(<span class="at">trans=</span><span class="st">&#39;log2&#39;</span>) <span class="sc">+</span></span>
+<span id="cb16-8"><a href="#cb16-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;concentration (fmol/l)&quot;</span>) <span class="sc">+</span></span>
+<span id="cb16-9"><a href="#cb16-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggtitle</span>(<span class="st">&quot;peptide AALEELVK in lab1 with axes on log scale&quot;</span>)</span></code></pre></div>
+</p>
+</details>
+<div class="sourceCode" id="cb17"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb17-1"><a href="#cb17-1" aria-hidden="true" tabindex="-1"></a>plotLog</span></code></pre></div>
+<p><img src="pda_quantification_preprocessing_noframes_files/figure-html/unnamed-chunk-20-1.png" width="672" /></p>
+<ul>
+<li>Data seems to be homoscedastic on log-scale <span class="math inline">\(\rightarrow\)</span> log transformation of the intensity data</li>
+<li>In quantitative proteomics analysis on <span class="math inline">\(\log_2\)</span></li>
+</ul>
+<p><span class="math inline">\(\rightarrow\)</span> Differences on a <span class="math inline">\(\log_2\)</span> scale: <span class="math inline">\(\log_2\)</span> fold changes</p>
+<p><span class="math display">\[
+\log_2 B - \log_2 A = \log_2 \frac{B}{A} = \log FC_\text{B - A}
+\]</span> <span class="math display">\[ 
+\begin{array} {l}
+log_2 FC = 1 \rightarrow FC = 2^1 =2\\
+log_2 FC = 2 \rightarrow FC = 2^2 = 4\\
+\end{array}
+\]</span></p>
+</div>
+<div id="log-transformation-of-the-data" class="section level3" number="3.1.2">
+<h3><span class="header-section-number">3.1.2</span> log-transformation of the data</h3>
+<details>
+<summary>
+Click to see code to log-transfrom the data
+</summary>
+<p>
+<ul>
+<li>We calculate how many non zero intensities we have for each peptide and this can be useful for filtering.</li>
+</ul>
+<div class="sourceCode" id="cb18"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb18-1"><a href="#cb18-1" aria-hidden="true" tabindex="-1"></a><span class="fu">rowData</span>(pe[[<span class="st">&quot;peptideRaw&quot;</span>]])<span class="sc">$</span>nNonZero <span class="ot">&lt;-</span> <span class="fu">rowSums</span>(<span class="fu">assay</span>(pe[[<span class="st">&quot;peptideRaw&quot;</span>]]) <span class="sc">&gt;</span> <span class="dv">0</span>)</span></code></pre></div>
+<ul>
+<li>Peptides with zero intensities are missing peptides and should be represent with a <code>NA</code> value rather than <code>0</code>.</li>
+</ul>
+<div class="sourceCode" id="cb19"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb19-1"><a href="#cb19-1" aria-hidden="true" tabindex="-1"></a>pe <span class="ot">&lt;-</span> <span class="fu">zeroIsNA</span>(pe, <span class="st">&quot;peptideRaw&quot;</span>) <span class="co"># convert 0 to NA</span></span></code></pre></div>
+<ul>
+<li>Logtransform data with base 2</li>
+</ul>
+<div class="sourceCode" id="cb20"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb20-1"><a href="#cb20-1" aria-hidden="true" tabindex="-1"></a>pe <span class="ot">&lt;-</span> <span class="fu">logTransform</span>(pe, <span class="at">base =</span> <span class="dv">2</span>, <span class="at">i =</span> <span class="st">&quot;peptideRaw&quot;</span>, <span class="at">name =</span> <span class="st">&quot;peptideLog&quot;</span>)</span></code></pre></div>
+</p>
+</details>
+<hr />
+</div>
+</div>
+<div id="filtering" class="section level2" number="3.2">
+<h2><span class="header-section-number">3.2</span> Filtering</h2>
+<ul>
+<li>Reverse sequences</li>
+<li>Only identified by modification site (only modified peptides detected)</li>
+<li>Razor peptides: non-unique peptides assigned to the protein group with the most other peptides</li>
+<li>Contaminants</li>
+<li>Peptides few identifications</li>
+<li>Proteins that are only identified with one or a few peptides</li>
+</ul>
+<p>Filtering does not induce bias if the criterion is independent from the downstream data analysis!</p>
+<details>
+<summary>
+Click to see code to filter the data
+</summary>
+<p>
+<ol style="list-style-type: decimal">
+<li>Handling overlapping protein groups</li>
+</ol>
+<p>In our approach a peptide can map to multiple proteins, as long as there is none of these proteins present in a smaller subgroup.</p>
+<div class="sourceCode" id="cb21"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb21-1"><a href="#cb21-1" aria-hidden="true" tabindex="-1"></a>pe <span class="ot">&lt;-</span> <span class="fu">filterFeatures</span>(pe, <span class="sc">~</span> Proteins <span class="sc">%in%</span> <span class="fu">smallestUniqueGroups</span>(<span class="fu">rowData</span>(pe[[<span class="st">&quot;peptideLog&quot;</span>]])<span class="sc">$</span>Proteins))</span></code></pre></div>
+<ol start="2" style="list-style-type: decimal">
+<li>Remove reverse sequences (decoys) and contaminants</li>
+</ol>
+<p>We now remove the contaminants, peptides that map to decoy sequences, and proteins which were only identified by peptides with modifications.</p>
+<div class="sourceCode" id="cb22"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb22-1"><a href="#cb22-1" aria-hidden="true" tabindex="-1"></a>pe <span class="ot">&lt;-</span> <span class="fu">filterFeatures</span>(pe,<span class="sc">~</span>Reverse <span class="sc">!=</span> <span class="st">&quot;+&quot;</span>)</span>
+<span id="cb22-2"><a href="#cb22-2" aria-hidden="true" tabindex="-1"></a>pe <span class="ot">&lt;-</span> <span class="fu">filterFeatures</span>(pe,<span class="sc">~</span> Potential.contaminant <span class="sc">!=</span> <span class="st">&quot;+&quot;</span>)</span></code></pre></div>
+<ol start="3" style="list-style-type: decimal">
+<li>Drop peptides that were only identified in one sample</li>
+</ol>
+<p>We keep peptides that were observed at last twice.</p>
+<div class="sourceCode" id="cb23"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb23-1"><a href="#cb23-1" aria-hidden="true" tabindex="-1"></a>pe <span class="ot">&lt;-</span> <span class="fu">filterFeatures</span>(pe,<span class="sc">~</span> nNonZero <span class="sc">&gt;=</span><span class="dv">2</span>)</span>
+<span id="cb23-2"><a href="#cb23-2" aria-hidden="true" tabindex="-1"></a><span class="fu">nrow</span>(pe[[<span class="st">&quot;peptideLog&quot;</span>]])</span></code></pre></div>
+<pre><code>## [1] 10478</code></pre>
+We keep 10478 peptides upon filtering.
+</p>
+</details>
+<hr />
+</div>
+<div id="normalization" class="section level2" number="3.3">
+<h2><span class="header-section-number">3.3</span> Normalization</h2>
+<details>
+<summary>
+Click to see code to make plot
+</summary>
+<p>
+<div class="sourceCode" id="cb25"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb25-1"><a href="#cb25-1" aria-hidden="true" tabindex="-1"></a>densityConditionD <span class="ot">&lt;-</span> pe[[<span class="st">&quot;peptideLog&quot;</span>]][,<span class="fu">colData</span>(pe)<span class="sc">$</span>condition<span class="sc">==</span><span class="st">&quot;D&quot;</span>] <span class="sc">%&gt;%</span> </span>
+<span id="cb25-2"><a href="#cb25-2" aria-hidden="true" tabindex="-1"></a>  assay <span class="sc">%&gt;%</span></span>
+<span id="cb25-3"><a href="#cb25-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb25-4"><a href="#cb25-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(sample, intensity) <span class="sc">%&gt;%</span> </span>
+<span id="cb25-5"><a href="#cb25-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lab =</span> <span class="fu">colData</span>(pe)[sample,<span class="st">&quot;lab&quot;</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb25-6"><a href="#cb25-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>intensity,<span class="at">group=</span>sample,<span class="at">color=</span>lab)) <span class="sc">+</span> </span>
+<span id="cb25-7"><a href="#cb25-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_density</span>() <span class="sc">+</span></span>
+<span id="cb25-8"><a href="#cb25-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">&quot;condition D&quot;</span>)</span>
+<span id="cb25-9"><a href="#cb25-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb25-10"><a href="#cb25-10" aria-hidden="true" tabindex="-1"></a>densityLab2 <span class="ot">&lt;-</span> pe[[<span class="st">&quot;peptideLog&quot;</span>]][,<span class="fu">colData</span>(pe)<span class="sc">$</span>lab<span class="sc">==</span><span class="st">&quot;lab2&quot;</span>] <span class="sc">%&gt;%</span> </span>
+<span id="cb25-11"><a href="#cb25-11" aria-hidden="true" tabindex="-1"></a>  assay <span class="sc">%&gt;%</span></span>
+<span id="cb25-12"><a href="#cb25-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb25-13"><a href="#cb25-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(sample, intensity) <span class="sc">%&gt;%</span> </span>
+<span id="cb25-14"><a href="#cb25-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">condition =</span> <span class="fu">colData</span>(pe)[sample,<span class="st">&quot;condition&quot;</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb25-15"><a href="#cb25-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>intensity,<span class="at">group=</span>sample,<span class="at">color=</span>condition)) <span class="sc">+</span> </span>
+<span id="cb25-16"><a href="#cb25-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_density</span>() <span class="sc">+</span></span>
+<span id="cb25-17"><a href="#cb25-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">&quot;lab2&quot;</span>)</span></code></pre></div>
+</p>
+</details>
+<div class="sourceCode" id="cb26"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb26-1"><a href="#cb26-1" aria-hidden="true" tabindex="-1"></a>densityConditionD</span></code></pre></div>
+<pre><code>## Warning: Removed 39179 rows containing non-finite values (stat_density).</code></pre>
+<p><img src="pda_quantification_preprocessing_noframes_files/figure-html/unnamed-chunk-28-1.png" width="672" /></p>
+<div class="sourceCode" id="cb28"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb28-1"><a href="#cb28-1" aria-hidden="true" tabindex="-1"></a>densityLab2</span></code></pre></div>
+<pre><code>## Warning: Removed 44480 rows containing non-finite values (stat_density).</code></pre>
+<p><img src="pda_quantification_preprocessing_noframes_files/figure-html/unnamed-chunk-29-1.png" width="672" /> - Even in very clean synthetic dataset (same background, only 48 UPS proteins can be different) the marginal peptide intensity distribution across samples can be quite distinct</p>
+<ul>
+<li>Considerable effects between and within labs for replicate samples</li>
+<li>Considerable effects between samples with different spike-in concentration</li>
+</ul>
+<p><span class="math inline">\(\rightarrow\)</span> Normalization is needed</p>
+<hr />
+<div id="mean-or-median" class="section level3" number="3.3.1">
+<h3><span class="header-section-number">3.3.1</span> Mean or median?</h3>
+<ul>
+<li>Miller and Fishkin (1997) reported that over a period of 30 years males would like to have on average 64.3 partners and females 2.8.</li>
+</ul>
+<details>
+<summary>
+</summary>
+<p>
+<ul>
+<li>Miller and Fishkin (1997) reported that the median number of partners someone would like to have over a period of 30 years males is 1 for both males and females.</li>
+</ul>
+</p>
+</details>
+<details>
+<summary>
+</summary>
+<p>
+<p>Mean is very sensitive to outliers!</p>
+<img src="figures/partners.png" /><!-- -->
+</p>
+</details>
+<hr />
+</div>
+<div id="normalization-of-the-data-by-median-centering" class="section level3" number="3.3.2">
+<h3><span class="header-section-number">3.3.2</span> Normalization of the data by median centering</h3>
+<p><span class="math display">\[y_{ip}^\text{norm} = y_{ip} - \hat\mu_i\]</span> with <span class="math inline">\(\hat\mu_i\)</span> the median intensity over all observed peptides in sample <span class="math inline">\(i\)</span>.</p>
+<details>
+<summary>
+Click to see R-code to normalize the data
+</summary>
+<p>
+<div class="sourceCode" id="cb30"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb30-1"><a href="#cb30-1" aria-hidden="true" tabindex="-1"></a>pe <span class="ot">&lt;-</span> <span class="fu">normalize</span>(pe, </span>
+<span id="cb30-2"><a href="#cb30-2" aria-hidden="true" tabindex="-1"></a>                <span class="at">i =</span> <span class="st">&quot;peptideLog&quot;</span>, </span>
+<span id="cb30-3"><a href="#cb30-3" aria-hidden="true" tabindex="-1"></a>                <span class="at">name =</span> <span class="st">&quot;peptideNorm&quot;</span>, </span>
+<span id="cb30-4"><a href="#cb30-4" aria-hidden="true" tabindex="-1"></a>                <span class="at">method =</span> <span class="st">&quot;center.median&quot;</span>)</span></code></pre></div>
+</p>
+</details>
+</div>
+<div id="plots-of-normalized-data" class="section level3" number="3.3.3">
+<h3><span class="header-section-number">3.3.3</span> Plots of normalized data</h3>
+<details>
+<summary>
+Click to see code to make plot
+</summary>
+<p>
+<div class="sourceCode" id="cb31"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb31-1"><a href="#cb31-1" aria-hidden="true" tabindex="-1"></a>densityConditionDNorm <span class="ot">&lt;-</span> pe[[<span class="st">&quot;peptideNorm&quot;</span>]][,<span class="fu">colData</span>(pe)<span class="sc">$</span>condition<span class="sc">==</span><span class="st">&quot;D&quot;</span>] <span class="sc">%&gt;%</span> </span>
+<span id="cb31-2"><a href="#cb31-2" aria-hidden="true" tabindex="-1"></a>  assay <span class="sc">%&gt;%</span></span>
+<span id="cb31-3"><a href="#cb31-3" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb31-4"><a href="#cb31-4" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(sample, intensity) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-5"><a href="#cb31-5" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">lab =</span> <span class="fu">colData</span>(pe)[sample,<span class="st">&quot;lab&quot;</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb31-6"><a href="#cb31-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>intensity,<span class="at">group=</span>sample,<span class="at">color=</span>lab)) <span class="sc">+</span> </span>
+<span id="cb31-7"><a href="#cb31-7" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_density</span>() <span class="sc">+</span></span>
+<span id="cb31-8"><a href="#cb31-8" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">&quot;condition D&quot;</span>)</span>
+<span id="cb31-9"><a href="#cb31-9" aria-hidden="true" tabindex="-1"></a></span>
+<span id="cb31-10"><a href="#cb31-10" aria-hidden="true" tabindex="-1"></a>densityLab2Norm <span class="ot">&lt;-</span> pe[[<span class="st">&quot;peptideNorm&quot;</span>]][,<span class="fu">colData</span>(pe)<span class="sc">$</span>lab<span class="sc">==</span><span class="st">&quot;lab2&quot;</span>] <span class="sc">%&gt;%</span> </span>
+<span id="cb31-11"><a href="#cb31-11" aria-hidden="true" tabindex="-1"></a>  assay <span class="sc">%&gt;%</span></span>
+<span id="cb31-12"><a href="#cb31-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">as.data.frame</span>() <span class="sc">%&gt;%</span></span>
+<span id="cb31-13"><a href="#cb31-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(sample, intensity) <span class="sc">%&gt;%</span> </span>
+<span id="cb31-14"><a href="#cb31-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">condition =</span> <span class="fu">colData</span>(pe)[sample,<span class="st">&quot;condition&quot;</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb31-15"><a href="#cb31-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x=</span>intensity,<span class="at">group=</span>sample,<span class="at">color=</span>condition)) <span class="sc">+</span> </span>
+<span id="cb31-16"><a href="#cb31-16" aria-hidden="true" tabindex="-1"></a>    <span class="fu">geom_density</span>() <span class="sc">+</span></span>
+<span id="cb31-17"><a href="#cb31-17" aria-hidden="true" tabindex="-1"></a>    <span class="fu">ggtitle</span>(<span class="st">&quot;lab2&quot;</span>)</span></code></pre></div>
+</p>
+</details>
+<div class="sourceCode" id="cb32"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb32-1"><a href="#cb32-1" aria-hidden="true" tabindex="-1"></a>densityConditionDNorm</span></code></pre></div>
+<pre><code>## Warning: Removed 39179 rows containing non-finite values (stat_density).</code></pre>
+<p><img src="pda_quantification_preprocessing_noframes_files/figure-html/unnamed-chunk-33-1.png" width="672" /></p>
+<div class="sourceCode" id="cb34"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb34-1"><a href="#cb34-1" aria-hidden="true" tabindex="-1"></a>densityLab2Norm</span></code></pre></div>
+<pre><code>## Warning: Removed 44480 rows containing non-finite values (stat_density).</code></pre>
+<p><img src="pda_quantification_preprocessing_noframes_files/figure-html/unnamed-chunk-34-1.png" width="672" /></p>
+<ul>
+<li>Upon normalization the marginal distributions of the peptide intensities across samples are much more comparable</li>
+<li>We still see deviations</li>
+<li>This can be due to technical variability</li>
+<li>In micro-array literature, quantile normalisation is used to force the median and all other quantiles to be equal across samples</li>
+<li>In proteomics quantile normalisation often introduces artifacts due to a difference in missing peptides across samples</li>
+<li>More advanced methods should be developed for normalizing proteomics data</li>
+<li>If there are differences in the width of the marginal distributions of the data across samples. They can also be standardized by using a robust estimator for location and scale, i.e.  <span class="math display">\[y_{ip}^\text{norm} = \frac{y_{ip} - \mu_i}{s_i}\]</span></li>
+</ul>
+<hr />
+</div>
+</div>
+<div id="summarization" class="section level2" number="3.4">
+<h2><span class="header-section-number">3.4</span> Summarization</h2>
+<ul>
+<li>We illustrate summarization issues using a subset of the cptac study (Lab 2, condition A and E) for a spiked protein (UPS P12081).</li>
+</ul>
+<details>
+<summary>
+Click to see code to make plot
+</summary>
+<p>
+<div class="sourceCode" id="cb36"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb36-1"><a href="#cb36-1" aria-hidden="true" tabindex="-1"></a>summaryPlot <span class="ot">&lt;-</span> pe[[<span class="st">&quot;peptideNorm&quot;</span>]][</span>
+<span id="cb36-2"><a href="#cb36-2" aria-hidden="true" tabindex="-1"></a>    <span class="fu">rowData</span>(pe[[<span class="st">&quot;peptideNorm&quot;</span>]])<span class="sc">$</span>Proteins <span class="sc">==</span> <span class="st">&quot;P12081ups|SYHC_HUMAN_UPS&quot;</span>,</span>
+<span id="cb36-3"><a href="#cb36-3" aria-hidden="true" tabindex="-1"></a>    <span class="fu">colData</span>(pe)<span class="sc">$</span>lab<span class="sc">==</span><span class="st">&quot;lab2&quot;</span><span class="sc">&amp;</span><span class="fu">colData</span>(pe)<span class="sc">$</span>condition <span class="sc">%in%</span> <span class="fu">c</span>(<span class="st">&quot;A&quot;</span>,<span class="st">&quot;E&quot;</span>)] <span class="sc">%&gt;%</span></span>
+<span id="cb36-4"><a href="#cb36-4" aria-hidden="true" tabindex="-1"></a>  assay <span class="sc">%&gt;%</span></span>
+<span id="cb36-5"><a href="#cb36-5" aria-hidden="true" tabindex="-1"></a>  as.data.frame <span class="sc">%&gt;%</span></span>
+<span id="cb36-6"><a href="#cb36-6" aria-hidden="true" tabindex="-1"></a>  <span class="fu">rownames_to_column</span>(<span class="at">var =</span> <span class="st">&quot;peptide&quot;</span>) <span class="sc">%&gt;%</span></span>
+<span id="cb36-7"><a href="#cb36-7" aria-hidden="true" tabindex="-1"></a>  <span class="fu">gather</span>(sample, intensity, <span class="sc">-</span>peptide) <span class="sc">%&gt;%</span> </span>
+<span id="cb36-8"><a href="#cb36-8" aria-hidden="true" tabindex="-1"></a>  <span class="fu">mutate</span>(<span class="at">condition =</span> <span class="fu">colData</span>(pe)[sample,<span class="st">&quot;condition&quot;</span>]) <span class="sc">%&gt;%</span></span>
+<span id="cb36-9"><a href="#cb36-9" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ggplot</span>(<span class="fu">aes</span>(<span class="at">x =</span> peptide, <span class="at">y =</span> intensity, <span class="at">color =</span> sample, <span class="at">group =</span> sample, <span class="at">label =</span> condition), <span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb36-10"><a href="#cb36-10" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_line</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb36-11"><a href="#cb36-11" aria-hidden="true" tabindex="-1"></a>  <span class="fu">geom_text</span>(<span class="at">show.legend =</span> <span class="cn">FALSE</span>) <span class="sc">+</span></span>
+<span id="cb36-12"><a href="#cb36-12" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme_minimal</span>() <span class="sc">+</span></span>
+<span id="cb36-13"><a href="#cb36-13" aria-hidden="true" tabindex="-1"></a>  <span class="fu">theme</span>(<span class="at">axis.text.x =</span> <span class="fu">element_text</span>(<span class="at">angle =</span> <span class="dv">90</span>, <span class="at">vjust =</span> <span class="fl">0.5</span>, <span class="at">hjust =</span> <span class="dv">1</span>)) <span class="sc">+</span></span>
+<span id="cb36-14"><a href="#cb36-14" aria-hidden="true" tabindex="-1"></a>  <span class="fu">xlab</span>(<span class="st">&quot;Peptide&quot;</span>) <span class="sc">+</span> </span>
+<span id="cb36-15"><a href="#cb36-15" aria-hidden="true" tabindex="-1"></a>  <span class="fu">ylab</span>(<span class="st">&quot;Intensity (log2)&quot;</span>)</span></code></pre></div>
+</p>
+</details>
+<div class="sourceCode" id="cb37"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb37-1"><a href="#cb37-1" aria-hidden="true" tabindex="-1"></a>summaryPlot</span></code></pre></div>
+<pre><code>## Warning: Removed 10 row(s) containing missing values (geom_path).</code></pre>
+<pre><code>## Warning: Removed 90 rows containing missing values (geom_text).</code></pre>
+<p><img src="pda_quantification_preprocessing_noframes_files/figure-html/unnamed-chunk-36-1.png" width="672" /></p>
+<p>We observe:</p>
+<ul>
+<li>intensities from multiple peptides for each protein in a sample</li>
+<li>Strong peptide effect -Unbalanced peptide identification</li>
+<li>Pseudo-replication: peptide intensities from a particular protein in the same sample are correlated, i.e. they more alike than peptide intensities from a particular protein between samples.</li>
+</ul>
+<p><span class="math inline">\(\rightarrow\)</span> Summarize all peptide intensities from the same protein in a sample into a single protein expression value</p>
+<p>Commonly used methods are</p>
+<ul>
+<li><p>Mean summarization <span class="math display">\[
+y_{ip}=\beta_i^\text{samp} + \epsilon_{ip}
+\]</span></p></li>
+<li><p>Median summarization</p></li>
+<li><p>Maxquant’s maxLFQ summarization (in protein groups file)</p></li>
+<li><p>Model based summarization: <span class="math display">\[
+y_{ip}=\beta_i^\text{samp} + \beta_p^\text{pep} + \epsilon_{ip}
+\]</span></p></li>
+</ul>
+<details>
+<summary>
+Click to see R-code to normalize the data
+</summary>
+<p>
+<p>We use the standard sumarization in aggregateFeatures, which is robust model based summarization.</p>
+<div class="sourceCode" id="cb40"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb40-1"><a href="#cb40-1" aria-hidden="true" tabindex="-1"></a>pe <span class="ot">&lt;-</span> <span class="fu">aggregateFeatures</span>(pe,</span>
+<span id="cb40-2"><a href="#cb40-2" aria-hidden="true" tabindex="-1"></a>    <span class="at">i =</span> <span class="st">&quot;peptideNorm&quot;</span>, </span>
+<span id="cb40-3"><a href="#cb40-3" aria-hidden="true" tabindex="-1"></a>    <span class="at">fcol =</span> <span class="st">&quot;Proteins&quot;</span>, </span>
+<span id="cb40-4"><a href="#cb40-4" aria-hidden="true" tabindex="-1"></a>    <span class="at">na.rm =</span> <span class="cn">TRUE</span>,</span>
+<span id="cb40-5"><a href="#cb40-5" aria-hidden="true" tabindex="-1"></a>    <span class="at">name =</span> <span class="st">&quot;protein&quot;</span>)</span></code></pre></div>
+<pre><code>## Your quantitative and row data contain missing values. Please read the
+## relevant section(s) in the aggregateFeatures manual page regarding the
+## effects of missing values on data aggregation.</code></pre>
+<p>Other summarization methods can be implemented by using the <code>fun</code> argument in the <code>aggregateFeatures</code> function.</p>
+<ul>
+<li><p><code>fun = MsCoreUtils::medianPolish()</code> to fits an additive model (two way decomposition) using Tukey’s median polish_ procedure using stats::medpolish()</p></li>
+<li><p><code>fun = MsCoreUtils::robustSummary()</code> to calculate a robust aggregation using MASS::rlm() (default)</p></li>
+<li><p><code>fun = base::colMeans()</code> to use the mean of each column</p></li>
+<li><p><code>fun = matrixStats::colMedians()</code> to use the median of each column</p></li>
+<li><p><code>fun = base::colSums()</code> to use the sum of each column</p></li>
+</ul>
+</p>
+</details>
+<hr />
+</div>
+</div>
+<div id="exercise" class="section level1" number="4">
+<h1><span class="header-section-number">4</span> Exercise</h1>
+<ol style="list-style-type: decimal">
+<li>We will evaluate different summarization methods (Maxquant maxLFQ, median and robust model based) in the tutorial session before discussing on their advantages/disadvantages.</li>
+<li>Can you anticipate on potential problems related to the summarization?</li>
+</ol>
+<hr />
+</div>
+<div id="code" class="section level1" number="5">
+<h1><span class="header-section-number">5</span> Code</h1>
+<ul>
+<li><p>Our R/Bioconductor package <code>msqrob2</code> can be used in R markdown scripts or with a GUI/shinyApp in the <code>msqrob2gui</code> package or .</p></li>
+<li><p>Users who want to learn how to code and automate proteomics data analyses in reproducible R markdown scripts can get more information on all code used in this script in the video below.</p></li>
+</ul>
+<ol style="list-style-type: decimal">
+<li><p>Data infrastructure</p></li>
+<li><p>Import proteomics data</p></li>
+<li><p>Preprocessing</p>
+<ul>
+<li><p>Log-transformation</p></li>
+<li><p>Filtering</p></li>
+<li><p>Normalisation</p></li>
+<li><p>Summarization</p></li>
+</ul></li>
+</ol>
+</div>
+
+<div id="rmd-source-code">LS0tCnRpdGxlOiAiU3RhdGlzdGljYWwgTWV0aG9kcyBmb3IgUXVhbnRpdGF0aXZlIE1TLWJhc2VkIFByb3Rlb21pY3M6IFBhcnQgSS4gUHJlcHJvY2Vzc2luZyIKYXV0aG9yOiAiTGlldmVuIENsZW1lbnQiCmRhdGU6ICJbc3RhdE9taWNzXShodHRwczovL3N0YXRvbWljcy5naXRodWIuaW8pLCBHaGVudCBVbml2ZXJzaXR5IgpvdXRwdXQ6CiAgICBodG1sX2RvY3VtZW50OgogICAgICBjb2RlX2Rvd25sb2FkOiB0cnVlCiAgICAgIHRoZW1lOiBmbGF0bHkKICAgICAgdG9jOiB0cnVlCiAgICAgIHRvY19mbG9hdDogdHJ1ZQogICAgICBoaWdobGlnaHQ6IHRhbmdvCiAgICAgIG51bWJlcl9zZWN0aW9uczogdHJ1ZQpiaWJsaW9ncmFwaHk6IG1zcXJvYjIuYmliCgotLS0KCjxhIHJlbD0ibGljZW5zZSIgaHJlZj0iaHR0cHM6Ly9jcmVhdGl2ZWNvbW1vbnMub3JnL2xpY2Vuc2VzL2J5LW5jLXNhLzQuMCI+PGltZyBhbHQ9IkNyZWF0aXZlIENvbW1vbnMgTGljZW5zZSIgc3R5bGU9ImJvcmRlci13aWR0aDowIiBzcmM9Imh0dHBzOi8vaS5jcmVhdGl2ZWNvbW1vbnMub3JnL2wvYnktbmMtc2EvNC4wLzg4eDMxLnBuZyIgLz48L2E+CgotIFtQbGF5bGlzdCBQREEgUHJlcHJvY2Vzc2luZ10oaHR0cHM6Ly93d3cueW91dHViZS5jb20vcGxheWxpc3Q/bGlzdD1QTFpIMWhQOF9MYkpKWFFlUV9LWUROb3EtQVh5RkJHNm5YKQoKIyBPdXRsaW5lIHstfQoKMS4gSW50cm9kdWN0aW9uCgoyLiBQcmVwcm9jZXNzaW5nCgogICAgLSBMb2ctdHJhbnNmb3JtYXRpb24KICAgIC0gRmlsdGVyaW5nCiAgICAtIE5vcm1hbGl6YXRpb24KICAgIC0gU3VtbWFyaXphdGlvbgoKTm90ZSwgdGhhdCB0aGUgUi1jb2RlIGlzIGluY2x1ZGVkIGZvciBsZWFybmVycyB3aG8gYXJlIGFpbWluZyB0byBkZXZlbG9wIFIvbWFya2Rvd24gc2NyaXB0cyB0byBhdXRvbWF0ZSB0aGVpciBxdWFudGl0YXRpdmUgcHJvdGVvbWljcyBkYXRhIGFuYWx5c2VzLgpBY2NvcmRpbmcgdG8gdGhlIHRhcmdldCBhdWRpZW5jZSBvZiB0aGUgY291cnNlIHdlIGVpdGhlciB3b3JrIHdpdGggYSBncmFwaGljYWwgdXNlciBpbnRlcmZhY2UgKEdVSSkgaW4gYSBSL3NoaW55IEFwcCBtc3Fyb2IyZ3VpIChlLmcuIFByb3Rlb21pY3MgQmlvaW5mb3JtYXRpY3MgY291cnNlIG9mIHRoZSBFQkkgYW5kIHRoZSBQcm90ZW9taWNzIERhdGEgQW5hbHlzaXMgY291cnNlIGF0IHRoZSBHdWxiZW5raWFuIGluc3RpdHV0ZSkgb3Igd2l0aCBSL21hcmtkb3ducyBzY3JpcHRzIChlLmcuIEJpb2luZm9ybWF0aWNzIFN1bW1lciBTY2hvb2wgYXQgVUNMb3V2YWluIG9yIHRoZSBTdGF0aXN0aWNhbCBHZW5vbWljcyBDb3Vyc2UgYXQgR2hlbnQgVW5pdmVyc2l0eSkuIAoKLS0tCgojIEludHJvOiBDaGFsbGVuZ2VzIGluIExhYmVsLUZyZWUgUXVhbnRpdGF0aXZlIFByb3Rlb21pY3MKCgoKIyMgTVMtYmFzZWQgd29ya2Zsb3cKCmBgYHtyIGVjaG89RkFMU0V9CmtuaXRyOjppbmNsdWRlX2dyYXBoaWNzKCIuL2ZpZ3VyZXMvUHJvdGVvbWljc1dvcmtmbG93LnBuZyIpCmBgYAogIAotIFBlcHRpZGUgQ2hhcmFjdGVyaXN0aWNzCiAgCiAgLSBNb2RpZmljYXRpb25zCiAgLSBJb25pc2F0aW9uIEVmZmljaWVuY3k6IGh1Z2UgdmFyaWFiaWxpdHkKICAtIElkZW50aWZpY2F0aW9uCiAgICAtIE1pc2lkZW50aWZpY2F0aW9uICRccmlnaHRhcnJvdyQgb3V0bGllcnMKICAgIC0gTVMkXjIkIHNlbGVjdGlvbiBvbiBwZXB0aWRlIGFidW5kYW5jZQogICAgLSBDb250ZXh0IGRlcGVuZGluZyBtaXNzaW5nbmVzcwogICAgLSBOb24tcmFuZG9tIG1pc3NpbmduZXNzCgokXHJpZ2h0YXJyb3ckIFVuYmFsYW5jZWQgcGVwaWRlIGlkZW50aWZpY2F0aW9ucyBhY3Jvc3Mgc2FtcGxlcyBhbmQgbWVzc3kgZGF0YQoKLS0tCgojIyBMZXZlbCBvZiBxdWFudGlmaWNhdGlvbgoKLSBNUy1iYXNlZCBwcm90ZW9taWNzIHJldHVybnMgcGVwdGlkZXM6IHBpZWNlcyBvZiBwcm90ZWlucwoKYGBge3IgZWNobz1GQUxTRX0Ka25pdHI6OmluY2x1ZGVfZ3JhcGhpY3MoIi4vZmlndXJlcy9jaGFsbGVuZ2VzX3BlcHRpZGVzLnBuZyIpCmBgYAoKLSBRdWFudGlmaWNhdGlvbiBjb21tb25seSByZXF1aXJlZCBvbiB0aGUgcHJvdGVpbiBsZXZlbAoKYGBge3IgZWNobz1GQUxTRX0Ka25pdHI6OmluY2x1ZGVfZ3JhcGhpY3MoIi4vZmlndXJlcy9jaGFsbGVuZ2VzX3Byb3RlaW5zLnBuZyIpCmBgYAoKLS0tCgojIyBMYWJlbC1mcmVlIFF1YW50aXRhdGl2ZSBQcm90ZW9taWNzIERhdGEgQW5hbHlzaXMgV29ya2Zsb3dzCgpgYGB7ciBlY2hvPUZBTFNFfQprbml0cjo6aW5jbHVkZV9ncmFwaGljcygiLi9maWd1cmVzL3Byb3Rlb21pY3NEYXRhQW5hbHlzaXMucG5nIikKYGBgCgotLS0KCiMjIENQVEFDIFNwaWtlLWluIFN0dWR5CgpgYGB7ciBlY2hvPUZBTFNFLCBvdXQud2lkdGg9IjUwJSJ9CmtuaXRyOjppbmNsdWRlX2dyYXBoaWNzKCIuL2ZpZ3VyZXMvY3B0YWNMYXlvdXRMdWRnZXIucG5nIikKYGBgCgotIFNhbWUgdHJ5cHNpbi1kaWdlc3RlZCB5ZWFzdCBwcm90ZW9tZSBiYWNrZ3JvdW5kIGluIGVhY2ggc2FtcGxlCi0gVHJ5cHNpbi1kaWdlc3RlZCBTaWdtYSBVUFMxIHN0YW5kYXJkOiA0OCBkaWZmZXJlbnQgaHVtYW4gcHJvdGVpbnMgc3Bpa2VkIGluIGF0IDUgZGlmZmVyZW50IGNvbmNlbnRyYXRpb25zICh0cmVhdG1lbnQgQS1FKSAKLSBTYW1wbGVzIHJlcGVhdGVkbHkgcnVuIG9uIGRpZmZlcmVudCBpbnN0cnVtZW50cyBpbiBkaWZmZXJlbnQgbGFicwotIEFmdGVyIE1heFF1YW50IHNlYXJjaCB3aXRoIG1hdGNoIGJldHdlZW4gcnVucyBvcHRpb24KCiAgLSA0MVwlIG9mIGFsbCBwcm90ZWlucyBhcmUgcXVhbnRpZmllZCBpbiBhbGwgc2FtcGxlcwogIC0gNi42XCUgb2YgYWxsIHBlcHRpZGVzIGFyZSBxdWFudGlmaWVkIGluIGFsbCBzYW1wbGVzCgokXHJpZ2h0YXJyb3ckIHZhc3QgYW1vdW50IG9mIG1pc3NpbmduZXNzCgoKIyMgTWF4cXVhbnQgb3V0cHV0CgpgYGB7ciBlY2hvPUZBTFNFfQprbml0cjo6aW5jbHVkZV9ncmFwaGljcygiLi9maWd1cmVzL21heHF1YW50T3V0cHV0RGlyLnBuZyIpCmBgYAoKLS0tCgoKIyBJbXBvcnQgdGhlIGRhdGEgaW4gUiAKCiMjIERhdGEgaW5mcmFzdHJ1Y3R1cmUKCjxkZXRhaWxzPjxzdW1tYXJ5PiBDbGljayB0byBzZWUgYmFja2dyb3VuZCBvbiBkYXRhIGluZnJhc3RydWN0dXJlIHVzZWQgaW4gUiB0byBzdG9yZSBwcm90ZW9taWNzIGRhdGEgPC9zdW1tYXJ5PjxwPgotIFdlIHVzZSB0aGUgYFFGZWF0dXJlc2AgcGFja2FnZSB0aGF0IHByb3ZpZGVzIHRoZSBpbmZyYXN0cnVjdHVyZSB0bwogIC0gc3RvcmUsICAKICAtIHByb2Nlc3MsIAogIC0gbWFuaXB1bGF0ZSBhbmQgCiAgLSBhbmFseXNlIHF1YW50aXRhdGl2ZSBkYXRhL2ZlYXR1cmVzIGZyb20gbWFzcyBzcGVjdHJvbWV0cnkKZXhwZXJpbWVudHMuIAoKLSBJdCBpcyBiYXNlZCBvbiB0aGUgYFN1bW1hcml6ZWRFeHBlcmltZW50YCBhbmQKYE11bHRpQXNzYXlFeHBlcmltZW50YCBjbGFzc2VzLiAKCgoKYGBge3IgZmlnLmNhcCA9ICJDb25jZXB0dWFsIHJlcHJlc2VudGF0aW9uIG9mIGEgYFN1bW1hcml6ZWRFeHBlcmltZW50YCBvYmplY3QuICBBc3NheXMgY29udGFpbiBpbmZvcm1hdGlvbiBvbiB0aGUgbWVhc3VyZWQgb21pY3MgZmVhdHVyZXMgKHJvd3MpIGZvciBkaWZmZXJlbnQgc2FtcGxlcyAoY29sdW1ucykuIFRoZSBgcm93RGF0YWAgY29udGFpbnMgaW5mb3JtYXRpb24gb24gdGhlIG9taWNzIGZlYXR1cmVzLCB0aGUgYGNvbERhdGFgIGNvbnRhaW5zIGluZm9ybWF0aW9uIG9uIHRoZSBzYW1wbGVzLCBpLmUuIGV4cGVyaW1lbnRhbCBkZXNpZ24gZXRjLiIsIGVjaG89RkFMU0UsIG91dC53aWR0aD0iODAlIn0Ka25pdHI6OmluY2x1ZGVfZ3JhcGhpY3MoIi4vZmlndXJlcy9TRS5wbmciKQpgYGAKCi0gQXNzYXlzIGluIGEgUUZlYXR1cmVzIG9iamVjdCBoYXZlIGEKaGllcmFyY2hpY2FsIHJlbGF0aW9uOiAKICAKICAtIHByb3RlaW5zIGFyZSBjb21wb3NlZCBvZiBwZXB0aWRlcywgCiAgLSB0aGVtc2VsdmVzIHByb2R1Y2VkIGJ5IHNwZWN0cmEKICAtIHJlbGF0aW9ucyBiZXR3ZWVuIGFzc2F5cyBhcmUgdHJhY2tlZCBhbmQgcmVjb3JkZWQgdGhyb3VnaG91dCBkYXRhIHByb2Nlc3NpbmcKCmBgYHtyIGZlYXR1cmVzcGxvdCwgZmlnLmNhcCA9ICJDb25jZXB0dWFsIHJlcHJlc2VudGF0aW9uIG9mIGEgYFFGZWF0dXJlc2Agb2JqZWN0IGFuZCB0aGUgYWdncmVnYXRpdmUgcmVsYXRpb24gYmV0d2VlbiBkaWZmZXJlbnQgYXNzYXlzLiIsIGVjaG8gPSBGQUxTRX0KcGFyKG1hciA9IGMoMCwgMCwgMCwgMCkpCnBsb3QoTkEsIHhsaW0gPSBjKDAsIDEyKSwgeWxpbSA9IGMoMCwgMjApLAogICAgIHhheHQgPSAibiIsIHlheHQgPSAibiIsCiAgICAgeGxhYiA9ICIiLCB5bGFiID0gIiIsIGJ0eSA9ICJuIikKZm9yIChpIGluIDA6NykKICAgIHJlY3QoMCwgaSwgMywgaSsxLCBjb2wgPSAibGlnaHRncmV5IiwgYm9yZGVyID0gIndoaXRlIikKZm9yIChpIGluIDg6MTIpCiAgICByZWN0KDAsIGksIDMsIGkrMSwgY29sID0gInN0ZWVsYmx1ZSIsIGJvcmRlciA9ICJ3aGl0ZSIpCmZvciAoaSBpbiAxMzoxOCkKICAgIHJlY3QoMCwgaSwgMywgaSsxLCBjb2wgPSAib3JhbmdlIiwgYm9yZGVyID0gIndoaXRlIikKZm9yIChpIGluIDE5KQogICAgcmVjdCgwLCBpLCAzLCBpKzEsIGNvbCA9ICJkYXJrZ3JleSIsIGJvcmRlciA9ICJ3aGl0ZSIpCmZvciAoaSBpbiA1OjcpCiAgICByZWN0KDUsIGksIDgsIGkrMSwgY29sID0gImxpZ2h0Z3JleSIsIGJvcmRlciA9ICJ3aGl0ZSIpCmZvciAoaSBpbiA4OjEwKQogICAgcmVjdCg1LCBpLCA4LCBpKzEsIGNvbCA9ICJzdGVlbGJsdWUiLCBib3JkZXIgPSAid2hpdGUiKQpmb3IgKGkgaW4gMTE6MTMpCiAgICByZWN0KDUsIGksIDgsIGkrMSwgY29sID0gIm9yYW5nZSIsIGJvcmRlciA9ICJ3aGl0ZSIpCmZvciAoaSBpbiAxNCkKICAgIHJlY3QoNSwgaSwgOCwgaSsxLCBjb2wgPSAiZGFya2dyZXkiLCBib3JkZXIgPSAid2hpdGUiKQpyZWN0KDksIDgsIDEyLCA4KzEsIGNvbCA9ICJsaWdodGdyZXkiLCBib3JkZXIgPSAid2hpdGUiKQpyZWN0KDksIDksIDEyLCA5KzEsIGNvbCA9ICJzdGVlbGJsdWUiLCBib3JkZXIgPSAid2hpdGUiKQpyZWN0KDksIDEwLCAxMiwgMTArMSwgY29sID0gIm9yYW5nZSIsIGJvcmRlciA9ICJ3aGl0ZSIpCnJlY3QoOSwgMTEsIDEyLCAxMSsxLCBjb2wgPSAiZGFya2dyZXkiLCBib3JkZXIgPSAid2hpdGUiKQpzZWdtZW50cygzLCA4LCA1LCA4LCBsdHkgPSAiZGFzaGVkIikKc2VnbWVudHMoMywgNiwgNSwgNywgbHR5ID0gImRhc2hlZCIpCnNlZ21lbnRzKDMsIDQsIDUsIDYsIGx0eSA9ICJkYXNoZWQiKQpzZWdtZW50cygzLCAwLCA1LCA1LCBsdHkgPSAiZGFzaGVkIikKc2VnbWVudHMoMywgMTAsIDUsIDksIGx0eSA9ICJkYXNoZWQiKQpzZWdtZW50cygzLCAxMSwgNSwgMTAsIGx0eSA9ICJkYXNoZWQiKQpzZWdtZW50cygzLCAxMywgNSwgMTEsIGx0eSA9ICJkYXNoZWQiKQpzZWdtZW50cygzLCAxNCwgNSwgMTIsIGx0eSA9ICJkYXNoZWQiKQpzZWdtZW50cygzLCAxNiwgNSwgMTMsIGx0eSA9ICJkYXNoZWQiKQpzZWdtZW50cygzLCAxOSwgNSwgMTQsIGx0eSA9ICJkYXNoZWQiKQpzZWdtZW50cygzLCAyMCwgNSwgMTUsIGx0eSA9ICJkYXNoZWQiKQpzZWdtZW50cyg4LCA1LCA5LCA4LCBsdHkgPSAiZGFzaGVkIikKc2VnbWVudHMoOCwgOCwgOSwgOSwgbHR5ID0gImRhc2hlZCIpCnNlZ21lbnRzKDgsIDExLCA5LCAxMCwgbHR5ID0gImRhc2hlZCIpCnNlZ21lbnRzKDgsIDE0LCA5LCAxMSwgbHR5ID0gImRhc2hlZCIpCnNlZ21lbnRzKDgsIDE1LCA5LCAxMiwgbHR5ID0gImRhc2hlZCIpCmBgYAoKPC9wPjwvZGV0YWlscz4KCiMjIEltcG9ydCBkYXRhIGluIFIKCgojIyMgTG9hZCBsaWJyYXJpZXMgCgo8ZGV0YWlscz48c3VtbWFyeT4gQ2xpY2sgdG8gc2VlIGNvZGUgPC9zdW1tYXJ5PjxwPgpgYGB7ciwgd2FybmluZz1GQUxTRSwgbWVzc2FnZT1GQUxTRX0KbGlicmFyeSh0aWR5dmVyc2UpCmxpYnJhcnkobGltbWEpCmxpYnJhcnkoUUZlYXR1cmVzKQpsaWJyYXJ5KG1zcXJvYjIpCmxpYnJhcnkocGxvdGx5KQpsaWJyYXJ5KGdncGxvdDIpCmBgYAo8L3A+PC9kZXRhaWxzPgoKIyMjIFJlYWQgZGF0YSAKCjxkZXRhaWxzPjxzdW1tYXJ5PiBDbGljayB0byBzZWUgYmFja2dyb3VuZCBhbmQgY29kZSA8L3N1bW1hcnk+PHA+CjEuIFdlIHVzZSBhIHBlcHRpZGVzLnR4dCBmaWxlIGZyb20gTVMtZGF0YSBxdWFudGlmaWVkIHdpdGggbWF4cXVhbnQgdGhhdCAKY29udGFpbnMgTVMxIGludGVuc2l0aWVzIHN1bW1hcml6ZWQgYXQgdGhlIHBlcHRpZGUgbGV2ZWwuIApgYGB7cn0KcGVwdGlkZXNGaWxlIDwtICJodHRwczovL3Jhdy5naXRodWJ1c2VyY29udGVudC5jb20vc3RhdE9taWNzL1BEQS9kYXRhL3F1YW50aWZpY2F0aW9uL2Z1bGxDcHRhY0RhdGFzU2V0Tm90Rm9yVHV0b3JpYWwvcGVwdGlkZXMudHh0IgpgYGAKCjIuIE1heHF1YW50IHN0b3JlcyB0aGUgaW50ZW5zaXR5IGRhdGEgZm9yIHRoZSBkaWZmZXJlbnQgc2FtcGxlcyBpbiBjb2x1bW5ucyB0aGF0IHN0YXJ0IHdpdGggSW50ZW5zaXR5LiBXZSBjYW4gcmV0cmVpdmUgdGhlIGNvbHVtbiBuYW1lcyB3aXRoIHRoZSBpbnRlbnNpdHkgZGF0YSB3aXRoIHRoZSBjb2RlIGJlbG93OiAKCmBgYHtyfQplY29scyA8LSBncmVwKCJJbnRlbnNpdHlcXC4iLCBuYW1lcyhyZWFkLmRlbGltKHBlcHRpZGVzRmlsZSkpKQpgYGAKCjMuIFJlYWQgdGhlIGRhdGEgYW5kIHN0b3JlIGl0IGluICBRRmVhdHVyZXMgb2JqZWN0IAoKYGBge3J9CnBlIDwtIHJlYWRRRmVhdHVyZXMoCiAgdGFibGUgPSBwZXB0aWRlc0ZpbGUsCiAgZm5hbWVzID0gMSwKICBlY29sID0gZWNvbHMsCiAgbmFtZSA9ICJwZXB0aWRlUmF3Iiwgc2VwPSJcdCIpCmBgYAo8L3A+PC9kZXRhaWxzPgoKIyMjIEV4cGxvcmUgb2JqZWN0Cgo8ZGV0YWlscz48c3VtbWFyeT4gQ2xpY2sgdG8gc2VlIGJhY2tncm91bmQgYW5kIGNvZGUgPC9zdW1tYXJ5PjxwPgotIFRoZSByb3dEYXRhIGNvbnRhaW5zIGluZm9ybWF0aW9uIG9uIHRoZSBmZWF0dXJlcyAocGVwdGlkZXMpIGluIHRoZSBhc3NheS4gRS5nLiBTZXF1ZW5jZSwgcHJvdGVpbiwgLi4uCgpgYGB7cn0Kcm93RGF0YShwZVtbInBlcHRpZGVSYXciXV0pCmBgYAoKLSBUaGUgY29sRGF0YSBjb250YWlucyBpbmZvcm1hdGlvbiBvbiB0aGUgc2FtcGxlcwoKYGBge3J9IApjb2xEYXRhKHBlKQpgYGAKCi0gTm8gaW5mb3JtYXRpb24gaXMgc3RvcmVkIHlldCBvbiB0aGUgZGVzaWduLiAKCgpgYGB7cn0gCnBlICU+JSBjb2xuYW1lcwpgYGAKCi0gTm90ZSwgdGhhdCB0aGUgc2FtcGxlIG5hbWVzIGluY2x1ZGUgdGhlIHNwaWtlLWluIGNvbmRpdGlvbi4gCi0gVGhleSBhbHNvIGVuZCBvbiBhIG51bWJlci4gCiAgCiAgLSAxLTMgaXMgZnJvbSBsYWIgMSwgCiAgLSA0LTYgZnJvbSBsYWIgMiBhbmQgCiAgLSA3LTkgZnJvbSBsYWIgMy4gCgotIFdlIHVwZGF0ZSB0aGUgY29sRGF0YSB3aXRoIGluZm9ybWF0aW9uIG9uIHRoZSBkZXNpZ24KCmBgYHtyfQpjb2xEYXRhKHBlKSRsYWIgPC0gcmVwKHJlcChwYXN0ZTAoImxhYiIsMTozKSxlYWNoPTMpLDUpICU+JSBhcy5mYWN0b3IKY29sRGF0YShwZSkkY29uZGl0aW9uIDwtIHBlW1sicGVwdGlkZVJhdyJdXSAlPiUgY29sbmFtZXMgJT4lIHN1YnN0cigxMiwxMikgJT4lIGFzLmZhY3Rvcgpjb2xEYXRhKHBlKSRzcGlrZUNvbmNlbnRyYXRpb24gPC0gcmVwKGMoQSA9IDAuMjUsIEIgPSAwLjc0LCBDID0gMi4yMiwgRCA9IDYuNjcsIEUgPSAyMCksZWFjaCA9IDkpCmBgYAoKLSBXZSBleHBsb3JlIHRoZSBjb2xEYXRhIGFnYWluCgpgYGB7cn0KY29sRGF0YShwZSkKYGBgCgo8L3A+PC9kZXRhaWxzPgoKLS0tCgojIFByZXByb2Nlc3NpbmcKCiMjIExvZy10cmFuc2Zvcm1hdGlvbgoKIyMjIEV4cGxvcmUgdGhlIGRhdGEgd2l0aCBwbG90cwoKUGVwdGlkZSBBQUxFRUxWSyBmcm9tIHNwaWtlZC1pbiBVUFMgcHJvdGVpbiBQMTIwODEuIApXZSBvbmx5IHNob3cgZGF0YSBmcm9tIGxhYjEuCgo8ZGV0YWlscz48c3VtbWFyeT4gQ2xpY2sgdG8gc2VlIGNvZGUgdG8gbWFrZSBwbG90IDwvc3VtbWFyeT48cD4KYGBge3J9CnN1YnNldCA8LSBwZVsiQUFMRUVMVksiLGNvbERhdGEocGUpJGxhYj09ImxhYjEiXQpwbG90V2h5TG9nIDwtIGRhdGEuZnJhbWUoY29uY2VudHJhdGlvbiA9IGNvbERhdGEoc3Vic2V0KSRzcGlrZUNvbmNlbnRyYXRpb24sCiAgICAgICAgICAgeSA9IGFzc2F5KHN1YnNldFtbInBlcHRpZGVSYXciXV0pICU+JSBjCiAgICAgICAgICAgKSAlPiUgCiAgZ2dwbG90KGFlcyhjb25jZW50cmF0aW9uLCB5KSkgKwogIGdlb21fcG9pbnQoKSArCiAgeGxhYigiY29uY2VudHJhdGlvbiAoZm1vbC9sKSIpICsKICBnZ3RpdGxlKCJwZXB0aWRlIEFBTEVFTFZLIGluIGxhYjEiKQpgYGAKPC9wPjwvZGV0YWlscz4KCmBgYHtyfQpwbG90V2h5TG9nCmBgYAoKLSBWYXJpYW5jZSBpbmNyZWFzZXMgd2l0aCB0aGUgbWVhbgokXHJpZ2h0YXJyb3ckIE11bHRpcGxpY2F0aXZlIGVycm9yIHN0cnVjdHVyZSAKCjxkZXRhaWxzPjxzdW1tYXJ5PiBDbGljayB0byBzZWUgY29kZSB0byBtYWtlIHBsb3QgPC9zdW1tYXJ5PjxwPgpgYGB7cn0KcGxvdExvZyA8LSBkYXRhLmZyYW1lKGNvbmNlbnRyYXRpb24gPSBjb2xEYXRhKHN1YnNldCkkc3Bpa2VDb25jZW50cmF0aW9uLAogICAgICAgICAgIHkgPSBhc3NheShzdWJzZXRbWyJwZXB0aWRlUmF3Il1dKSAlPiUgYwogICAgICAgICAgICkgJT4lIAogIGdncGxvdChhZXMoY29uY2VudHJhdGlvbiwgeSkpICsKICBnZW9tX3BvaW50KCkgKyAKICBzY2FsZV94X2NvbnRpbnVvdXModHJhbnM9J2xvZzInKSArIAogIHNjYWxlX3lfY29udGludW91cyh0cmFucz0nbG9nMicpICsKICB4bGFiKCJjb25jZW50cmF0aW9uIChmbW9sL2wpIikgKwogIGdndGl0bGUoInBlcHRpZGUgQUFMRUVMVksgaW4gbGFiMSB3aXRoIGF4ZXMgb24gbG9nIHNjYWxlIikKYGBgCjwvcD48L2RldGFpbHM+CgpgYGB7cn0KcGxvdExvZwpgYGAKCi0gRGF0YSBzZWVtcyB0byBiZSBob21vc2NlZGFzdGljIG9uIGxvZy1zY2FsZSAkXHJpZ2h0YXJyb3ckIGxvZyB0cmFuc2Zvcm1hdGlvbiBvZiB0aGUgaW50ZW5zaXR5IGRhdGEKLSBJbiBxdWFudGl0YXRpdmUgcHJvdGVvbWljcyBhbmFseXNpcyBvbiAkXGxvZ18yJCAKCiRccmlnaHRhcnJvdyQgRGlmZmVyZW5jZXMgb24gYSAkXGxvZ18yJCBzY2FsZTogJFxsb2dfMiQgZm9sZCBjaGFuZ2VzCgokJApcbG9nXzIgQiAtIFxsb2dfMiBBID0gXGxvZ18yIFxmcmFje0J9e0F9ID0gXGxvZyBGQ19cdGV4dHtCIC0gQX0KJCQKJCQgClxiZWdpbnthcnJheX0ge2x9CmxvZ18yIEZDID0gMSBccmlnaHRhcnJvdyBGQyA9IDJeMSA9MlxcCmxvZ18yIEZDID0gMiBccmlnaHRhcnJvdyBGQyA9IDJeMiA9IDRcXApcZW5ke2FycmF5fQokJAoKCiMjIyBsb2ctdHJhbnNmb3JtYXRpb24gb2YgdGhlIGRhdGEgCgo8ZGV0YWlscz48c3VtbWFyeT4gQ2xpY2sgdG8gc2VlIGNvZGUgdG8gbG9nLXRyYW5zZnJvbSB0aGUgZGF0YSA8L3N1bW1hcnk+PHA+Ci0gV2UgY2FsY3VsYXRlIGhvdyBtYW55IG5vbiB6ZXJvIGludGVuc2l0aWVzIHdlIGhhdmUgZm9yIGVhY2ggcGVwdGlkZSBhbmQgdGhpcyBjYW4gYmUgdXNlZnVsIGZvciBmaWx0ZXJpbmcuCgpgYGB7cn0Kcm93RGF0YShwZVtbInBlcHRpZGVSYXciXV0pJG5Ob25aZXJvIDwtIHJvd1N1bXMoYXNzYXkocGVbWyJwZXB0aWRlUmF3Il1dKSA+IDApCmBgYAoKCi0gUGVwdGlkZXMgd2l0aCB6ZXJvIGludGVuc2l0aWVzIGFyZSBtaXNzaW5nIHBlcHRpZGVzIGFuZCBzaG91bGQgYmUgcmVwcmVzZW50CndpdGggYSBgTkFgIHZhbHVlIHJhdGhlciB0aGFuIGAwYC4KCmBgYHtyfQpwZSA8LSB6ZXJvSXNOQShwZSwgInBlcHRpZGVSYXciKSAjIGNvbnZlcnQgMCB0byBOQQpgYGAKCi0gTG9ndHJhbnNmb3JtIGRhdGEgd2l0aCBiYXNlIDIKCmBgYHtyfQpwZSA8LSBsb2dUcmFuc2Zvcm0ocGUsIGJhc2UgPSAyLCBpID0gInBlcHRpZGVSYXciLCBuYW1lID0gInBlcHRpZGVMb2ciKQpgYGAKPC9wPjwvZGV0YWlscz4KCi0tLQoKIyMgRmlsdGVyaW5nCgotIFJldmVyc2Ugc2VxdWVuY2VzCi0gT25seSBpZGVudGlmaWVkIGJ5IG1vZGlmaWNhdGlvbiBzaXRlIChvbmx5IG1vZGlmaWVkIHBlcHRpZGVzIGRldGVjdGVkKQotIFJhem9yIHBlcHRpZGVzOiBub24tdW5pcXVlIHBlcHRpZGVzIGFzc2lnbmVkIHRvIHRoZSBwcm90ZWluIGdyb3VwIHdpdGggdGhlIG1vc3Qgb3RoZXIgcGVwdGlkZXMgCi0gQ29udGFtaW5hbnRzCi0gUGVwdGlkZXMgZmV3IGlkZW50aWZpY2F0aW9ucwotIFByb3RlaW5zIHRoYXQgYXJlIG9ubHkgaWRlbnRpZmllZCB3aXRoIG9uZSBvciBhIGZldyBwZXB0aWRlcwoKRmlsdGVyaW5nIGRvZXMgbm90IGluZHVjZSBiaWFzIGlmIHRoZSBjcml0ZXJpb24gaXMgaW5kZXBlbmRlbnQgZnJvbSB0aGUgZG93bnN0cmVhbSBkYXRhIGFuYWx5c2lzIQoKPGRldGFpbHM+PHN1bW1hcnk+IENsaWNrIHRvIHNlZSBjb2RlIHRvIGZpbHRlciB0aGUgZGF0YSA8L3N1bW1hcnk+PHA+CgoxLiBIYW5kbGluZyBvdmVybGFwcGluZyBwcm90ZWluIGdyb3VwcwoKSW4gb3VyIGFwcHJvYWNoIGEgcGVwdGlkZSBjYW4gbWFwIHRvIG11bHRpcGxlIHByb3RlaW5zLCBhcyBsb25nIGFzIHRoZXJlIGlzCm5vbmUgb2YgdGhlc2UgcHJvdGVpbnMgcHJlc2VudCBpbiBhIHNtYWxsZXIgc3ViZ3JvdXAuCgpgYGB7cn0KcGUgPC0gZmlsdGVyRmVhdHVyZXMocGUsIH4gUHJvdGVpbnMgJWluJSBzbWFsbGVzdFVuaXF1ZUdyb3Vwcyhyb3dEYXRhKHBlW1sicGVwdGlkZUxvZyJdXSkkUHJvdGVpbnMpKQpgYGAKCjIuIFJlbW92ZSByZXZlcnNlIHNlcXVlbmNlcyAoZGVjb3lzKSBhbmQgY29udGFtaW5hbnRzCgpXZSBub3cgcmVtb3ZlIHRoZSBjb250YW1pbmFudHMsIHBlcHRpZGVzIHRoYXQgbWFwIHRvIGRlY295IHNlcXVlbmNlcywgYW5kIHByb3RlaW5zCndoaWNoIHdlcmUgb25seSBpZGVudGlmaWVkIGJ5IHBlcHRpZGVzIHdpdGggbW9kaWZpY2F0aW9ucy4KCmBgYHtyfQpwZSA8LSBmaWx0ZXJGZWF0dXJlcyhwZSx+UmV2ZXJzZSAhPSAiKyIpCnBlIDwtIGZpbHRlckZlYXR1cmVzKHBlLH4gUG90ZW50aWFsLmNvbnRhbWluYW50ICE9ICIrIikKYGBgCgozLiBEcm9wIHBlcHRpZGVzIHRoYXQgd2VyZSBvbmx5IGlkZW50aWZpZWQgaW4gb25lIHNhbXBsZQoKV2Uga2VlcCBwZXB0aWRlcyB0aGF0IHdlcmUgb2JzZXJ2ZWQgYXQgbGFzdCB0d2ljZS4KCmBgYHtyfQpwZSA8LSBmaWx0ZXJGZWF0dXJlcyhwZSx+IG5Ob25aZXJvID49MikKbnJvdyhwZVtbInBlcHRpZGVMb2ciXV0pCmBgYAoKV2Uga2VlcCBgciBucm93KHBlW1sicGVwdGlkZUxvZyJdXSlgIHBlcHRpZGVzIHVwb24gZmlsdGVyaW5nLgo8L3A+PC9kZXRhaWxzPgoKLS0tCgojIyBOb3JtYWxpemF0aW9uIAoKPGRldGFpbHM+PHN1bW1hcnk+IENsaWNrIHRvIHNlZSBjb2RlIHRvIG1ha2UgcGxvdCA8L3N1bW1hcnk+PHA+CgpgYGB7cn0KZGVuc2l0eUNvbmRpdGlvbkQgPC0gcGVbWyJwZXB0aWRlTG9nIl1dWyxjb2xEYXRhKHBlKSRjb25kaXRpb249PSJEIl0gJT4lIAogIGFzc2F5ICU+JQogIGFzLmRhdGEuZnJhbWUoKSAlPiUKICBnYXRoZXIoc2FtcGxlLCBpbnRlbnNpdHkpICU+JSAKICBtdXRhdGUobGFiID0gY29sRGF0YShwZSlbc2FtcGxlLCJsYWIiXSkgJT4lCiAgZ2dwbG90KGFlcyh4PWludGVuc2l0eSxncm91cD1zYW1wbGUsY29sb3I9bGFiKSkgKyAKICAgIGdlb21fZGVuc2l0eSgpICsKICAgIGdndGl0bGUoImNvbmRpdGlvbiBEIikKCmRlbnNpdHlMYWIyIDwtIHBlW1sicGVwdGlkZUxvZyJdXVssY29sRGF0YShwZSkkbGFiPT0ibGFiMiJdICU+JSAKICBhc3NheSAlPiUKICBhcy5kYXRhLmZyYW1lKCkgJT4lCiAgZ2F0aGVyKHNhbXBsZSwgaW50ZW5zaXR5KSAlPiUgCiAgbXV0YXRlKGNvbmRpdGlvbiA9IGNvbERhdGEocGUpW3NhbXBsZSwiY29uZGl0aW9uIl0pICU+JQogIGdncGxvdChhZXMoeD1pbnRlbnNpdHksZ3JvdXA9c2FtcGxlLGNvbG9yPWNvbmRpdGlvbikpICsgCiAgICBnZW9tX2RlbnNpdHkoKSArCiAgICBnZ3RpdGxlKCJsYWIyIikKYGBgCjwvcD48L2RldGFpbHM+CgpgYGB7cn0KZGVuc2l0eUNvbmRpdGlvbkQKYGBgCgpgYGB7cn0KZGVuc2l0eUxhYjIKYGBgCi0gRXZlbiBpbiB2ZXJ5IGNsZWFuIHN5bnRoZXRpYyBkYXRhc2V0IChzYW1lIGJhY2tncm91bmQsIG9ubHkgNDggVVBTCnByb3RlaW5zIGNhbiBiZSBkaWZmZXJlbnQpIHRoZSBtYXJnaW5hbCBwZXB0aWRlIGludGVuc2l0eSBkaXN0cmlidXRpb24KYWNyb3NzIHNhbXBsZXMgY2FuIGJlIHF1aXRlIGRpc3RpbmN0CgotIENvbnNpZGVyYWJsZSBlZmZlY3RzIGJldHdlZW4gYW5kIHdpdGhpbiBsYWJzIGZvciByZXBsaWNhdGUgc2FtcGxlcwotIENvbnNpZGVyYWJsZSBlZmZlY3RzIGJldHdlZW4gc2FtcGxlcyB3aXRoIGRpZmZlcmVudCBzcGlrZS1pbgpjb25jZW50cmF0aW9uCgokXHJpZ2h0YXJyb3ckIE5vcm1hbGl6YXRpb24gaXMgbmVlZGVkCgotLS0KCgojIyMgTWVhbiBvciBtZWRpYW4/CgotIE1pbGxlciBhbmQgRmlzaGtpbiAoMTk5NykgcmVwb3J0ZWQgdGhhdCBvdmVyIGEgcGVyaW9kIG9mIDMwIHllYXJzIG1hbGVzIHdvdWxkIGxpa2UgdG8gaGF2ZSBvbiBhdmVyYWdlIDY0LjMgcGFydG5lcnMgYW5kIGZlbWFsZXMgMi44LiAKCgo8ZGV0YWlscz48c3VtbWFyeT4gPC9zdW1tYXJ5PjxwPgotIE1pbGxlciBhbmQgRmlzaGtpbiAoMTk5NykgcmVwb3J0ZWQgdGhhdCB0aGUgbWVkaWFuIG51bWJlciBvZiBwYXJ0bmVycyBzb21lb25lIHdvdWxkIGxpa2UgdG8gaGF2ZSBvdmVyIGEgcGVyaW9kIG9mIDMwIHllYXJzIG1hbGVzIGlzIDEgZm9yIGJvdGggbWFsZXMgYW5kIGZlbWFsZXMuIAo8L3A+PC9kZXRhaWxzPgoKPGRldGFpbHM+PHN1bW1hcnk+IDwvc3VtbWFyeT48cD4KTWVhbiBpcyB2ZXJ5IHNlbnNpdGl2ZSB0byBvdXRsaWVycyEKCmBgYHtyIGVjaG89RkFMU0V9CmtuaXRyOjppbmNsdWRlX2dyYXBoaWNzKCIuL2ZpZ3VyZXMvcGFydG5lcnMucG5nIikKYGBgCjwvcD48L2RldGFpbHM+CgoKLS0tCgojIyMgTm9ybWFsaXphdGlvbiBvZiB0aGUgZGF0YSBieSBtZWRpYW4gY2VudGVyaW5nCgokJHlfe2lwfV5cdGV4dHtub3JtfSA9IHlfe2lwfSAtIFxoYXRcbXVfaSQkIAp3aXRoICRcaGF0XG11X2kkIHRoZSBtZWRpYW4gaW50ZW5zaXR5IG92ZXIgYWxsIG9ic2VydmVkIHBlcHRpZGVzIGluIHNhbXBsZSAkaSQuCgo8ZGV0YWlscz48c3VtbWFyeT4gQ2xpY2sgdG8gc2VlIFItY29kZSB0byBub3JtYWxpemUgdGhlIGRhdGEgPC9zdW1tYXJ5PjxwPgpgYGB7cn0KcGUgPC0gbm9ybWFsaXplKHBlLCAKICAgICAgICAgICAgICAgIGkgPSAicGVwdGlkZUxvZyIsIAogICAgICAgICAgICAgICAgbmFtZSA9ICJwZXB0aWRlTm9ybSIsIAogICAgICAgICAgICAgICAgbWV0aG9kID0gImNlbnRlci5tZWRpYW4iKQpgYGAKPC9wPjwvZGV0YWlscz4KCiMjIyBQbG90cyBvZiBub3JtYWxpemVkIGRhdGEKCgo8ZGV0YWlscz48c3VtbWFyeT4gQ2xpY2sgdG8gc2VlIGNvZGUgdG8gbWFrZSBwbG90IDwvc3VtbWFyeT48cD4KYGBge3J9CmRlbnNpdHlDb25kaXRpb25ETm9ybSA8LSBwZVtbInBlcHRpZGVOb3JtIl1dWyxjb2xEYXRhKHBlKSRjb25kaXRpb249PSJEIl0gJT4lIAogIGFzc2F5ICU+JQogIGFzLmRhdGEuZnJhbWUoKSAlPiUKICBnYXRoZXIoc2FtcGxlLCBpbnRlbnNpdHkpICU+JSAKICBtdXRhdGUobGFiID0gY29sRGF0YShwZSlbc2FtcGxlLCJsYWIiXSkgJT4lCiAgZ2dwbG90KGFlcyh4PWludGVuc2l0eSxncm91cD1zYW1wbGUsY29sb3I9bGFiKSkgKyAKICAgIGdlb21fZGVuc2l0eSgpICsKICAgIGdndGl0bGUoImNvbmRpdGlvbiBEIikKCmRlbnNpdHlMYWIyTm9ybSA8LSBwZVtbInBlcHRpZGVOb3JtIl1dWyxjb2xEYXRhKHBlKSRsYWI9PSJsYWIyIl0gJT4lIAogIGFzc2F5ICU+JQogIGFzLmRhdGEuZnJhbWUoKSAlPiUKICBnYXRoZXIoc2FtcGxlLCBpbnRlbnNpdHkpICU+JSAKICBtdXRhdGUoY29uZGl0aW9uID0gY29sRGF0YShwZSlbc2FtcGxlLCJjb25kaXRpb24iXSkgJT4lCiAgZ2dwbG90KGFlcyh4PWludGVuc2l0eSxncm91cD1zYW1wbGUsY29sb3I9Y29uZGl0aW9uKSkgKyAKICAgIGdlb21fZGVuc2l0eSgpICsKICAgIGdndGl0bGUoImxhYjIiKQpgYGAKPC9wPjwvZGV0YWlscz4KCmBgYHtyfQpkZW5zaXR5Q29uZGl0aW9uRE5vcm0KYGBgCgpgYGB7cn0KZGVuc2l0eUxhYjJOb3JtCmBgYAoKLSBVcG9uIG5vcm1hbGl6YXRpb24gdGhlIG1hcmdpbmFsIGRpc3RyaWJ1dGlvbnMgb2YgdGhlIHBlcHRpZGUgaW50ZW5zaXRpZXMgYWNyb3NzIHNhbXBsZXMgYXJlIG11Y2ggbW9yZSBjb21wYXJhYmxlCi0gV2Ugc3RpbGwgc2VlIGRldmlhdGlvbnMKLSBUaGlzIGNhbiBiZSBkdWUgdG8gdGVjaG5pY2FsIHZhcmlhYmlsaXR5Ci0gSW4gbWljcm8tYXJyYXkgbGl0ZXJhdHVyZSwgcXVhbnRpbGUgbm9ybWFsaXNhdGlvbiBpcyB1c2VkIHRvIGZvcmNlIHRoZSBtZWRpYW4gYW5kIGFsbCBvdGhlciBxdWFudGlsZXMgdG8gYmUgZXF1YWwgYWNyb3NzIHNhbXBsZXMKLSBJbiBwcm90ZW9taWNzIHF1YW50aWxlIG5vcm1hbGlzYXRpb24gb2Z0ZW4gaW50cm9kdWNlcyBhcnRpZmFjdHMgZHVlIHRvIGEgZGlmZmVyZW5jZSBpbiBtaXNzaW5nIHBlcHRpZGVzIGFjcm9zcyBzYW1wbGVzIAotIE1vcmUgYWR2YW5jZWQgbWV0aG9kcyBzaG91bGQgYmUgZGV2ZWxvcGVkIGZvciBub3JtYWxpemluZyBwcm90ZW9taWNzIGRhdGEKLSBJZiB0aGVyZSBhcmUgZGlmZmVyZW5jZXMgaW4gdGhlIHdpZHRoIG9mIHRoZSBtYXJnaW5hbCBkaXN0cmlidXRpb25zIG9mIHRoZSBkYXRhIGFjcm9zcyBzYW1wbGVzLiBUaGV5IGNhbiBhbHNvIGJlIHN0YW5kYXJkaXplZCBieSB1c2luZyBhIHJvYnVzdCBlc3RpbWF0b3IgZm9yIGxvY2F0aW9uIGFuZCBzY2FsZSwgaS5lLiAKJCR5X3tpcH1eXHRleHR7bm9ybX0gPSBcZnJhY3t5X3tpcH0gLSBcbXVfaX17c19pfSQkIAoKLS0tCgojIyBTdW1tYXJpemF0aW9uIAoKLSBXZSBpbGx1c3RyYXRlIHN1bW1hcml6YXRpb24gaXNzdWVzIHVzaW5nIGEgc3Vic2V0IG9mIHRoZSBjcHRhYyBzdHVkeSAoTGFiIDIsIGNvbmRpdGlvbiBBIGFuZCBFKSBmb3IgYSBzcGlrZWQgcHJvdGVpbiAoVVBTIFAxMjA4MSkuCgo8ZGV0YWlscz48c3VtbWFyeT4gQ2xpY2sgdG8gc2VlIGNvZGUgdG8gbWFrZSBwbG90IDwvc3VtbWFyeT48cD4KYGBge3IgcGxvdCA9IEZBTFNFfQpzdW1tYXJ5UGxvdCA8LSBwZVtbInBlcHRpZGVOb3JtIl1dWwogICAgcm93RGF0YShwZVtbInBlcHRpZGVOb3JtIl1dKSRQcm90ZWlucyA9PSAiUDEyMDgxdXBzfFNZSENfSFVNQU5fVVBTIiwKICAgIGNvbERhdGEocGUpJGxhYj09ImxhYjIiJmNvbERhdGEocGUpJGNvbmRpdGlvbiAlaW4lIGMoIkEiLCJFIildICU+JQogIGFzc2F5ICU+JQogIGFzLmRhdGEuZnJhbWUgJT4lCiAgcm93bmFtZXNfdG9fY29sdW1uKHZhciA9ICJwZXB0aWRlIikgJT4lCiAgZ2F0aGVyKHNhbXBsZSwgaW50ZW5zaXR5LCAtcGVwdGlkZSkgJT4lIAogIG11dGF0ZShjb25kaXRpb24gPSBjb2xEYXRhKHBlKVtzYW1wbGUsImNvbmRpdGlvbiJdKSAlPiUKICBnZ3Bsb3QoYWVzKHggPSBwZXB0aWRlLCB5ID0gaW50ZW5zaXR5LCBjb2xvciA9IHNhbXBsZSwgZ3JvdXAgPSBzYW1wbGUsIGxhYmVsID0gY29uZGl0aW9uKSwgc2hvdy5sZWdlbmQgPSBGQUxTRSkgKwogIGdlb21fbGluZShzaG93LmxlZ2VuZCA9IEZBTFNFKSArCiAgZ2VvbV90ZXh0KHNob3cubGVnZW5kID0gRkFMU0UpICsKICB0aGVtZV9taW5pbWFsKCkgKwogIHRoZW1lKGF4aXMudGV4dC54ID0gZWxlbWVudF90ZXh0KGFuZ2xlID0gOTAsIHZqdXN0ID0gMC41LCBoanVzdCA9IDEpKSArCiAgeGxhYigiUGVwdGlkZSIpICsgCiAgeWxhYigiSW50ZW5zaXR5IChsb2cyKSIpCmBgYAo8L3A+PC9kZXRhaWxzPgoKYGBge3J9CnN1bW1hcnlQbG90CmBgYAoKV2Ugb2JzZXJ2ZTogIAoKLSBpbnRlbnNpdGllcyBmcm9tIG11bHRpcGxlIHBlcHRpZGVzIGZvciBlYWNoIHByb3RlaW4gaW4gYSBzYW1wbGUKLSBTdHJvbmcgcGVwdGlkZSBlZmZlY3QgCi1VbmJhbGFuY2VkIHBlcHRpZGUgaWRlbnRpZmljYXRpb24KLSBQc2V1ZG8tcmVwbGljYXRpb246IHBlcHRpZGUgaW50ZW5zaXRpZXMgZnJvbSBhIHBhcnRpY3VsYXIgcHJvdGVpbiBpbiB0aGUgc2FtZSBzYW1wbGUgYXJlIGNvcnJlbGF0ZWQsIGkuZS4gdGhleSBtb3JlIGFsaWtlIHRoYW4gcGVwdGlkZSBpbnRlbnNpdGllcyBmcm9tIGEgcGFydGljdWxhciBwcm90ZWluIGJldHdlZW4gc2FtcGxlcy4gCgoKJFxyaWdodGFycm93JCBTdW1tYXJpemUgYWxsIHBlcHRpZGUgaW50ZW5zaXRpZXMgZnJvbSB0aGUgc2FtZSBwcm90ZWluIGluIGEgc2FtcGxlIGludG8gYSBzaW5nbGUgcHJvdGVpbiBleHByZXNzaW9uIHZhbHVlCgpDb21tb25seSB1c2VkIG1ldGhvZHMgYXJlIAoKLSBNZWFuIHN1bW1hcml6YXRpb24KJCQKeV97aXB9PVxiZXRhX2leXHRleHR7c2FtcH0gKyBcZXBzaWxvbl97aXB9CiQkCgotIE1lZGlhbiBzdW1tYXJpemF0aW9uCi0gTWF4cXVhbnQncyBtYXhMRlEgc3VtbWFyaXphdGlvbiAoaW4gcHJvdGVpbiBncm91cHMgZmlsZSkKLSBNb2RlbCBiYXNlZCBzdW1tYXJpemF0aW9uOiAKJCQKeV97aXB9PVxiZXRhX2leXHRleHR7c2FtcH0gKyBcYmV0YV9wXlx0ZXh0e3BlcH0gKyBcZXBzaWxvbl97aXB9CiQkCgoKPGRldGFpbHM+PHN1bW1hcnk+IENsaWNrIHRvIHNlZSBSLWNvZGUgdG8gbm9ybWFsaXplIHRoZSBkYXRhIDwvc3VtbWFyeT48cD4KV2UgdXNlIHRoZSBzdGFuZGFyZCBzdW1hcml6YXRpb24gaW4gYWdncmVnYXRlRmVhdHVyZXMsIHdoaWNoIGlzCnJvYnVzdCBtb2RlbCBiYXNlZCBzdW1tYXJpemF0aW9uLiAKCmBgYHtyLHdhcm5pbmc9RkFMU0V9CnBlIDwtIGFnZ3JlZ2F0ZUZlYXR1cmVzKHBlLAogICAgaSA9ICJwZXB0aWRlTm9ybSIsIAogICAgZmNvbCA9ICJQcm90ZWlucyIsIAogICAgbmEucm0gPSBUUlVFLAogICAgbmFtZSA9ICJwcm90ZWluIikKYGBgCgpPdGhlciBzdW1tYXJpemF0aW9uIG1ldGhvZHMgY2FuIGJlIGltcGxlbWVudGVkIGJ5IHVzaW5nIHRoZSBgZnVuYCBhcmd1bWVudCBpbiB0aGUgYGFnZ3JlZ2F0ZUZlYXR1cmVzYCBmdW5jdGlvbi4gCgotIGBmdW4gPSBNc0NvcmVVdGlsczo6bWVkaWFuUG9saXNoKClgIHRvIGZpdHMgYW4gYWRkaXRpdmUgbW9kZWwgKHR3byB3YXkgZGVjb21wb3NpdGlvbikgdXNpbmcgVHVrZXkncyBtZWRpYW4gcG9saXNoXyBwcm9jZWR1cmUgdXNpbmcgc3RhdHM6Om1lZHBvbGlzaCgpCgotIGBmdW4gPSBNc0NvcmVVdGlsczo6cm9idXN0U3VtbWFyeSgpYCB0byBjYWxjdWxhdGUgYSByb2J1c3QgYWdncmVnYXRpb24gdXNpbmcgTUFTUzo6cmxtKCkgKGRlZmF1bHQpCgotIGBmdW4gPSBiYXNlOjpjb2xNZWFucygpYCB0byB1c2UgdGhlIG1lYW4gb2YgZWFjaCBjb2x1bW4KCi0gYGZ1biA9IG1hdHJpeFN0YXRzOjpjb2xNZWRpYW5zKClgIHRvIHVzZSB0aGUgbWVkaWFuIG9mIGVhY2ggY29sdW1uCgotIGBmdW4gPSBiYXNlOjpjb2xTdW1zKClgIHRvIHVzZSB0aGUgc3VtIG9mIGVhY2ggY29sdW1uCgo8L3A+PC9kZXRhaWxzPgoKLS0tCgojIEV4ZXJjaXNlCgoxLiBXZSB3aWxsIGV2YWx1YXRlIGRpZmZlcmVudCBzdW1tYXJpemF0aW9uIG1ldGhvZHMgKE1heHF1YW50IG1heExGUSwgbWVkaWFuIGFuZCByb2J1c3QgbW9kZWwgYmFzZWQpIGluIHRoZSB0dXRvcmlhbCBzZXNzaW9uIGJlZm9yZSBkaXNjdXNzaW5nIG9uIHRoZWlyIGFkdmFudGFnZXMvZGlzYWR2YW50YWdlcy4KMi4gQ2FuIHlvdSBhbnRpY2lwYXRlIG9uIHBvdGVudGlhbCBwcm9ibGVtcyByZWxhdGVkIHRvIHRoZSBzdW1tYXJpemF0aW9uPwoKLS0tCgojIENvZGUKCi0gT3VyIFIvQmlvY29uZHVjdG9yIHBhY2thZ2UgYG1zcXJvYjJgIGNhbiBiZSB1c2VkIGluIFIgbWFya2Rvd24gc2NyaXB0cyBvciB3aXRoIGEgR1VJL3NoaW55QXBwIGluIHRoZSBgbXNxcm9iMmd1aWAgcGFja2FnZSBvciAuIAoKLSBVc2VycyB3aG8gd2FudCB0byBsZWFybiBob3cgdG8gY29kZSBhbmQgYXV0b21hdGUgcHJvdGVvbWljcyBkYXRhIGFuYWx5c2VzIGluIHJlcHJvZHVjaWJsZSBSIG1hcmtkb3duIHNjcmlwdHMgY2FuIGdldCBtb3JlIGluZm9ybWF0aW9uIG9uIGFsbCBjb2RlIHVzZWQgaW4gdGhpcyBzY3JpcHQgaW4gdGhlIHZpZGVvIGJlbG93LiAKCjEuIERhdGEgaW5mcmFzdHJ1Y3R1cmUKCjIuIEltcG9ydCBwcm90ZW9taWNzIGRhdGEKCjMuIFByZXByb2Nlc3NpbmcKCiAgICAtICAgTG9nLXRyYW5zZm9ybWF0aW9uCgogICAgLSBGaWx0ZXJpbmcKCiAgICAtIE5vcm1hbGlzYXRpb24KCiAgICAtIFN1bW1hcml6YXRpb24KCg==</div>
+<div class="footer">
+    <hr>
+    This work is licensed under the <a href= "https://creativecommons.org/licenses/by-nc-sa/4.0">
+    CC BY-NC-SA 4.0</a> licence.
+</div>
+
+
+</div>
+</div>
+
+</div>
+
+<script>
+
+// add bootstrap table styles to pandoc tables
+function bootstrapStylePandocTables() {
+  $('tr.odd').parent('tbody').parent('table').addClass('table table-condensed');
+}
+$(document).ready(function () {
+  bootstrapStylePandocTables();
+});
+
+
+</script>
+
+<!-- tabsets -->
+
+<script>
+$(document).ready(function () {
+  window.buildTabsets("TOC");
+});
+
+$(document).ready(function () {
+  $('.tabset-dropdown > .nav-tabs > li').click(function () {
+    $(this).parent().toggleClass('nav-tabs-open');
+  });
+});
+</script>
+
+<!-- code folding -->
+<script>
+$(document).ready(function () {
+  window.initializeSourceEmbed("pda_quantification_preprocessing_noframes.Rmd");
+  window.initializeCodeFolding("show" === "show");
+});
+</script>
+
+<script>
+$(document).ready(function ()  {
+
+    // temporarily add toc-ignore selector to headers for the consistency with Pandoc
+    $('.unlisted.unnumbered').addClass('toc-ignore')
+
+    // move toc-ignore selectors from section div to header
+    $('div.section.toc-ignore')
+        .removeClass('toc-ignore')
+        .children('h1,h2,h3,h4,h5').addClass('toc-ignore');
+
+    // establish options
+    var options = {
+      selectors: "h1,h2,h3",
+      theme: "bootstrap3",
+      context: '.toc-content',
+      hashGenerator: function (text) {
+        return text.replace(/[.\\/?&!#<>]/g, '').replace(/\s/g, '_');
+      },
+      ignoreSelector: ".toc-ignore",
+      scrollTo: 0
+    };
+    options.showAndHide = true;
+    options.smoothScroll = true;
+
+    // tocify
+    var toc = $("#TOC").tocify(options).data("toc-tocify");
+});
+</script>
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>
