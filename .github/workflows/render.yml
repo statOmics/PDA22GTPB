@@ -43,6 +43,10 @@ jobs:
         if: runner.os == 'linux'
         run: sudo apt-get -y install libmagick++-dev
 
+      - name: Install libnetcdf-dev on Linux
+        if: runner.os == 'linux'
+        run: sudo apt-get -y install libnetcdf-dev  
+        
       - name: Set up renv
         uses: r-lib/actions/setup-renv@v2
         with:
