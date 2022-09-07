@@ -1,0 +1,180 @@
+---
+title: "Introduction to TargetDecoy"
+author: 
+  - name: Lieven Clement
+    affiliation:
+    - Ghent University
+output: 
+    html_document:
+      code_download: true
+      theme: flatly
+      toc: true
+      toc_float: true
+      highlight: tango
+      number_sections: true
+    pdf_document:
+      toc: true
+      number_sections: true
+linkcolor: blue
+urlcolor: blue
+citecolor: blue
+
+bibliography: msqrob2.bib
+
+---
+
+```{r setup, include=FALSE}
+library(knitr)
+opts_chunk$set(
+    collapse = TRUE,
+    comment = "#>",
+    crop = NULL,
+    fig.width = 6,
+    dpi = 72
+)
+```
+
+```{r "libraries", message=FALSE, warning=FALSE}
+library(TargetDecoy)
+library(ggplot2)
+```
+
+# Introduction
+
+![](figures/ProteomicsWorkflow.png)
+![](figures/peptideSpectralMatching.png)
+- E-values: Probability that a random candidate peptide produces a higher score that the observed PSM score.
+
+
+- Probability that a random candidate peptide produces a higher score that the observed PSM score for a real search with OMSSA.
+
+```{r}
+library(TargetDecoy)
+library(tidyverse)
+data("ModSwissXT")
+hlp <- TargetDecoy:::.getDF(ModSwissXT) 
+names(hlp) <- names(hlp) %>%
+    str_replace(pattern=":",replacement="_")
+hlp <- hlp %>% 
+mutate(omssa_evalue=as.double(omssa_evalue))
+hlp %>% 
+    filter(!is.na(omssa_evalue)) %>% 
+    ggplot(aes(omssa_evalue)) +
+    geom_histogram(breaks=seq(0,100,5)) +
+    xlab("E-value (%)") + 
+    ylab("frequency")
+```
+
+- E-value that we expect for a random spectrum and candidate peptide.
+
+```{r}
+data.frame(evalue=runif(20000,0,100)) %>%
+    ggplot(aes(evalue)) +
+    geom_histogram(breaks=seq(0,100,5)) +
+    xlab("E-value (%)") + 
+    ylab("frequency")
+```
+
+- Probability that a random candidate peptide produces a higher score than the observed PSM score for decoys in a real search with OMSSA.
+
+```{r}
+hlp %>% 
+    filter(isdecoy & !is.na(omssa_evalue)) %>% 
+    ggplot(aes(omssa_evalue)) +
+    geom_histogram(breaks=seq(0,100,5)) +
+    xlab("E-value (%)") + 
+    ylab("frequency")
+```
+
+- A bad hit is the random hit with the best score so it is also bound to have a low E-value.
+
+- If we look at E-values for all PSMs they are only useful as a score.
+
+- We should know the distribution of the maximum score of
+random candidate peptides when we want to do the statistics.
+
+```{r warning=FALSE}
+hlp %>% 
+    filter(!is.na(omssa_evalue)) %>% 
+    ggplot(aes(-log10(omssa_evalue))) +
+    geom_histogram(breaks=seq(0,1000,.5)) +
+    xlab("-log10(E-value)") + 
+    ylab("frequency") +
+    xlim(0,20) 
+```
+# Concepts
+
+## Basic Statistical Concepts
+
+```{r}
+names(hlp) <- names(hlp) %>% str_replace(pattern="-",replacement = "_")
+hlp <- hlp %>% mutate(ms_gf_specevalue=as.double(ms_gf_specevalue))
+```
+
+```{r warning=FALSE}
+histAll <- hlp %>% 
+    filter(!is.na(ms_gf_specevalue)) %>% 
+    ggplot(aes(-log10(ms_gf_specevalue))) +
+    geom_histogram(breaks=seq(0,1000,.5)) +
+    xlab("-log10(E-value)") + 
+    ylab("frequency") +
+    xlim(0,32) +
+    ylim(0,1500)
+histAll
+```
+Let $x$ be the PSM score 
+
+The scores will follow a mixture distribution:
+
+$$f(x) = \pi_bf_b(x)+(1-\pi_b)f_g(x),$$
+We will return a list of PSMs by using the FDR:
+
+$$FDR = E\left[\frac{FP}{TP + FP}\right]$$
+
+- FP: number of false positives, bad hits
+- TP: number of true positives, good hits
+
+
+Our list, typically consists of all PSMs with a score $x$ above a threshold t. 
+
+- So we know TP + FP: 
+$$\text{#PSMs with } x \geq t$$
+```{r warning=FALSE}
+histAll + 
+  ylim(-50,1500)+
+  geom_rect(aes(xmin = 7, xmax = 30, ymin = -50, ymax = 1400),fill=NA, color="black") +
+  geom_text(data = NULL, x = 7, y = 1500, label = expression("x">="t"),hjust=0)
+```
+- To estimate the FDR we only have to estimate the expected number of PSMs that are bad hits with a score $x$ above the threshold $t$.
+
+$$\widehat{\text{FDR}}(t) = \frac{E\left[FP\right]}{\text{#PSMs with } x \geq t}$$
+
+## Competitive target decoy approach:
+
+- Search against decoy database to generate representative bad hits
+- Reverse database is popular
+- Concatenated search is most popular
+- Advantage, a number of bad hits already matches with decoys $\rightarrow$ FDR problem less problematic.
+
+```{r warning=FALSE}
+hlp %>% 
+    filter(!is.na(ms_gf_specevalue)) %>% 
+    ggplot(aes(-log10(ms_gf_specevalue))) +
+    geom_histogram(breaks=seq(0,1000,.5)) +
+    xlab("-log10(E-value)") + 
+    ylab("frequency") +
+    xlim(0,40) +
+    facet_grid(isdecoy~.)
+```
+
+
+We estimate that by using the decoys: 
+$$\text{# Decoys with x} \geq t$$
+So our estimated FDR becomes 
+
+$$\widehat{\text{FDR}}(x\geq t) = \frac{\text{# Decoys} \geq t}{\text{# Targets} \geq t}$$
+If we rewrite the FDR we can see its assumptions:
+
+$$\widehat{\text{FDR}}(x\geq t) = \frac{\text{# Decoys}}{\text{# Targets}}\frac{\frac{\text{# Decoys with }x \geq t}{\text{# Decoys}}}{\frac{\text{# Targets with } x \geq t}{\text{# Targets}}}$$
+
+$$ 
