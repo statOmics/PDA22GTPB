@@ -47,7 +47,7 @@ You will also be requested to watch the following videos before attending the co
 
 ### 1. Bioinformatics for Proteomics
 
-- Slides: [Bioinformatics for Proteomics](assets/martens_proteomics_bioinformatics_20190401.pdf)
+- Slides: [Protein Identification](assets/martens_proteomics_bioinformatics_20190401.pdf)
 - Slides: [Quantification in MS proteomics](assets/martens_proteomics_quantification_20180530.pdf)
 - Slides: [Data Sharing](assets/DataSharingPDA19.pdf)
 - Slides: [Pathways](assets/PathwayDiscussionPDA19.pdf)

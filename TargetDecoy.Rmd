@@ -122,6 +122,7 @@ histAll <- hlp %>%
     ylim(0,1500)
 histAll
 ```
+
 Let $x$ be the PSM score 
 
 The scores will follow a mixture distribution:
@@ -139,15 +140,18 @@ Our list, typically consists of all PSMs with a score $x$ above a threshold t.
 
 - So we know TP + FP: 
 $$\text{#PSMs with } x \geq t$$
+
 ```{r warning=FALSE}
-histAll + 
-  ylim(-50,1500)+
-  geom_rect(aes(xmin = 7, xmax = 30, ymin = -50, ymax = 1400),fill=NA, color="black") +
-  geom_text(data = NULL, x = 7, y = 1500, label = expression("x">="t"),hjust=0)
+histAll #+ 
+#  ylim(-50,1500) +
+#  annotate("rect",xmin = 7, xmax = 30, ymin = -50, ymax = 1400,fill=NA, color="black") +
+#  geom_text(data = NULL, x = 7, y = 1500, label = expression("x">="t"),hjust=0)
 ```
+
 - To estimate the FDR we only have to estimate the expected number of PSMs that are bad hits with a score $x$ above the threshold $t$.
 
 $$\widehat{\text{FDR}}(t) = \frac{E\left[FP\right]}{\text{#PSMs with } x \geq t}$$
+
 
 ## Competitive target decoy approach:
 
@@ -167,7 +171,6 @@ hlp %>%
     facet_grid(isdecoy~.)
 ```
 
-
 We estimate that by using the decoys: 
 $$\text{# Decoys with x} \geq t$$
 So our estimated FDR becomes 
@@ -175,6 +178,5 @@ So our estimated FDR becomes
 $$\widehat{\text{FDR}}(x\geq t) = \frac{\text{# Decoys} \geq t}{\text{# Targets} \geq t}$$
 If we rewrite the FDR we can see its assumptions:
 
-$$\widehat{\text{FDR}}(x\geq t) = \frac{\text{# Decoys}}{\text{# Targets}}\frac{\frac{\text{# Decoys with }x \geq t}{\text{# Decoys}}}{\frac{\text{# Targets with } x \geq t}{\text{# Targets}}}$$
 
-$$ 
+$$\widehat{\text{FDR}}(x\geq t) = \frac{\text{# Decoys}}{\text{# Targets}}\frac{\frac{\text{# Decoys with }x \geq t}{\text{# Decoys}}}{\frac{\text{# Targets with } x \geq t}{\text{# Targets}}}$$
