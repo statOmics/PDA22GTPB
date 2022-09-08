@@ -11,7 +11,7 @@
 
 
 
-<title>Proteomics Data Analysis (PDA)</title>
+<title>instructors</title>
 
 <script src="site_libs/header-attrs-2.14/header-attrs.js"></script>
 <script src="site_libs/jquery-3.6.0/jquery-3.6.0.min.js"></script>
@@ -30,11 +30,8 @@
        code {color: inherit; background-color: rgba(0, 0, 0, 0.04);}
        pre:not([class]) { background-color: white }</style>
 <script src="site_libs/navigation-1.1/tabsets.js"></script>
-<script src="site_libs/navigation-1.1/codefolding.js"></script>
 <link href="site_libs/pagedtable-1.1/css/pagedtable.css" rel="stylesheet" />
 <script src="site_libs/pagedtable-1.1/js/pagedtable.js"></script>
-<link href="site_libs/font-awesome-5.1.0/css/all.css" rel="stylesheet" />
-<link href="site_libs/font-awesome-5.1.0/css/v4-shims.css" rel="stylesheet" />
 
 <style type="text/css">
   code{white-space: pre-wrap;}
@@ -50,28 +47,6 @@
 
 
 
-<style type="text/css">
-/* for pandoc --citeproc since 2.11 */
-div.csl-bib-body { }
-div.csl-entry {
-  clear: both;
-}
-.hanging div.csl-entry {
-  margin-left:2em;
-  text-indent:-2em;
-}
-div.csl-left-margin {
-  min-width:2em;
-  float:left;
-}
-div.csl-right-inline {
-  margin-left:2em;
-  padding-left:1em;
-}
-div.csl-indent {
-  margin-left: 2em;
-}
-</style>
 
 <link rel="stylesheet" href="style.css" type="text/css" />
 
@@ -235,9 +210,6 @@ $(document).ready(function () {
 </style>
 
 <!-- code folding -->
-<style type="text/css">
-.code-folding-btn { margin-bottom: 4px; }
-</style>
 
 
 
@@ -328,108 +300,26 @@ $(document).ready(function () {
 
 <div id="header">
 
-<div class="btn-group pull-right float-right">
-<button type="button" class="btn btn-default btn-xs btn-secondary btn-sm dropdown-toggle" data-toggle="dropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false"><span>Code</span> <span class="caret"></span></button>
-<ul class="dropdown-menu dropdown-menu-right" style="min-width: 50px;">
-<li><a id="rmd-show-all-code" href="#">Show All Code</a></li>
-<li><a id="rmd-hide-all-code" href="#">Hide All Code</a></li>
-</ul>
-</div>
 
 
-
-<h1 class="title toc-ignore">Proteomics Data Analysis (PDA)</h1>
 
 </div>
 
 
-<hr />
-<p><img src="figures/IntroFig.png" /><!-- --></p>
-<div id="course-description" class="section level3">
-<h3>Course Description</h3>
-<p>Mass spectrometry based proteomic experiments generate ever larger datasets and, as a consequence, complex data interpretation challenges. This course focuses on bioinformatics and statistics for peptide identification, quantification, and differential analysis. Moreover, more advanced experimental designs and blocking will also be introduced. The core focus will be on shotgun proteomics data, and quantification using label-free precursor peptide (MS1) ion intensities. The course will rely exclusively on free and user-friendly software, all of which can be directly applied in your lab upon returning from the course. You will also learn how to submit data to PRIDE/ProteomeXchange, which is a common requirement for publication in the field, and how to browse and reprocess publicly available data from online repositories. The course will provide a solid basis for beginners, but will also bring new perspectives to those already familiar with standard data interpretation procedures in proteomics.</p>
+<div id="instructors" class="section level1">
+<h1>Instructors</h1>
+<div id="lieven-clement" class="section level3">
+<h3>Lieven Clement</h3>
+<p><img src="figures/lieven.jpg" alt="Lieven" width="17%" style="float:left;padding:10px"/></p>
+<p>Lieven Clement is an Associate Professor of Statistical Genomics at Ghent University, where he leads the <a href="https://statomics.github.io/">statOmics</a> Group. He is an expert in developing statistical methods and open source tools for differential omics data analysis. His research efforts resulted in numerous publications on novel methods and tools for, and applied research in omics data analysis. His lab is built around two strategic research pillars each connected to an omics domain: (single cell) transcriptomics and proteomics and he has a strong interest in leveraging his expertise to translational research. He also serves as a member of the core team that established a new Master of Science in Bioinformatics at Ghent University and as a board member of the Belgian Proteomics Association.</p>
+<p>Affiliation: Ghent University, Ghent, BE</p>
+<p></br> </br> </br></p>
 </div>
-<div id="target-audience" class="section level3">
-<h3>Target Audience</h3>
-<p>This course is oriented towards biologists and bioinformaticians with a particular interest in differential analysis for quantitative proteomics.</p>
-</div>
-<div id="prerequisites" class="section level3">
-<h3>Prerequisites</h3>
-<p>The participants should have a basic knowledge about mass spectrometry based proteomics. Experience in analysing proteomics data is an advantage, but not mandatory. The course does not require advanced computer skills.</p>
-<p>You will also be requested to watch the following videos before attending the course: <a href="./techvid.html">Mass Spectrometry and Bioinformatics for Proteomics</a></p>
-<hr />
-</div>
-<div id="detailed-program" class="section level3">
-<h3>Detailed Program</h3>
-</div>
-<div id="bioinformatics-for-proteomics" class="section level3">
-<h3>1. Bioinformatics for Proteomics</h3>
-<ul>
-<li><p>Slides: <a href="assets/martens_proteomics_bioinformatics_20190401.pdf">Protein Identification</a></p></li>
-<li><p>Slides: <a href="assets/martens_proteomics_quantification_20180530.pdf">Quantification in MS proteomics</a></p></li>
-<li><p>Slides: <a href="assets/DataSharingPDA19.pdf">Data Sharing</a></p></li>
-<li><p>Slides: <a href="assets/PathwayDiscussionPDA19.pdf">Pathways</a></p></li>
-<li><p>Tutorials: <a href="https://compomics.com/bioinformatics-for-proteomics/">Tutorials Bioinformatics for Proteomics</a></p></li>
-</ul>
-</div>
-<div id="statistics-for-proteomics-data-analysis" class="section level3">
-<h3>2. Statistics for Proteomics Data Analysis</h3>
-<div id="software-and-data" class="section level4">
-<h4>2.0. Software and Data</h4>
-<ul>
-<li><p><a href="./software.html">Install msqrob2 software</a></p></li>
-<li><p><a href="https://github.com/statOmics/PDA/archive/refs/heads/data.zip">Download data</a></p></li>
-<li><p>More information on our tools can be found in our papers <span class="citation">(L. J. Goeminne, Gevaert, and Clement 2016)</span>, <span class="citation">(L. J. E. Goeminne et al. 2020)</span> and <span class="citation">(Sticker et al. 2020)</span>. Please refer to our work when using our tools.</p></li>
-</ul>
-</div>
-<div id="identification" class="section level4">
-<h4>2.1. Identification</h4>
-</div>
-<div id="statistical-data-analysis-of-label-free-quantitative" class="section level4">
-<h4>2.2. Statistical Data Analysis of Label Free Quantitative</h4>
-<ol style="list-style-type: decimal">
-<li>Preprocessing &amp; Analysis of Label Free Quantitative Proteomics Experiments with Simple Designs</li>
-</ol>
-<ul>
-<li>Lecture: <a href="./pda_quantification_preprocessing.html">Preprocessing</a>, [<a href="./pda_quantification_preprocessing.pdf">PDF</a>]</li>
-<li>Tutorial: <a href="./pda_tutorialPreprocessing.html">preprocessing</a></li>
-<li>Wrap-up: <a href="./pda_robustSummarisation_peptideModels.html">Peptide-based Models</a>[<a href="./pda_robustSummarisation_peptideModels.pdf">PDF</a>]</li>
-</ul>
-<ol start="2" style="list-style-type: decimal">
-<li>Statistical Inference &amp; Analysis of Experiments with Factorial Designs</li>
-</ol>
-<ul>
-<li>Lecture: <a href="./pda_quantification_inference.html">Differential Abundance Analysis</a>, [<a href="./pda_quantification_inference.pdf">PDF</a>]</li>
-<li>Tutorial: <a href="pda_tutorialDesign.html">Design</a></li>
-<li>Wrap-up: <a href="./pda_blocking_wrapup.html">Blocking</a>[<a href="./pda_blocking_wrapup.pdf">PDF</a>]</li>
-</ul>
-<hr />
-</div>
-</div>
-<div id="instructors" class="section level3">
-<h3>Instructors</h3>
-<ul>
-<li><a href="https://statomics.github.io/pages/about.html">Lieven Clement</a>, Associate Professor of Statistical Genomics, <a href="https://statomics.github.io/">statOmics</a>, <a href="https://www.ugent.be/">Ghent University</a>, Belgium</li>
-</ul>
-</div>
-<div id="license" class="section level3">
-<h3>License</h3>
-<p><a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a></p>
-<p>This project is licensed under the <a href="https://creativecommons.org/licenses/by-nc-sa/4.0">Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International (CC BY-NC-SA 4.0)</a></p>
-<hr />
-</div>
-<div id="references" class="section level3 unnumbered">
-<h3 class="unnumbered">References</h3>
-<div id="refs" class="references csl-bib-body hanging-indent">
-<div id="ref-goeminne2020" class="csl-entry">
-Goeminne, L. J. E., A. Sticker, L. Martens, K. Gevaert, and L. Clement. 2020. <span>“<span class="nocase"><span>M</span><span>S</span>q<span>R</span>ob <span>T</span>akes the <span>M</span>issing <span>H</span>urdle: <span>U</span>niting <span>I</span>ntensity- and <span>C</span>ount-<span>B</span>ased <span>P</span>roteomics</span>.”</span> <em>Anal Chem</em> 92 (9): 6278–87.
-</div>
-<div id="ref-goeminne2016" class="csl-entry">
-Goeminne, L. J., K. Gevaert, and L. Clement. 2016. <span>“<span class="nocase"><span>P</span>eptide-level <span>R</span>obust <span>R</span>idge <span>R</span>egression <span>I</span>mproves <span>E</span>stimation, <span>S</span>ensitivity, and <span>S</span>pecificity in <span>D</span>ata-dependent <span>Q</span>uantitative <span>L</span>abel-free <span>S</span>hotgun <span>P</span>roteomics</span>.”</span> <em>Mol Cell Proteomics</em> 15 (2): 657–68.
-</div>
-<div id="ref-sticker2020" class="csl-entry">
-Sticker, A., L. Goeminne, L. Martens, and L. Clement. 2020. <span>“<span class="nocase"><span>R</span>obust <span>S</span>ummarization and <span>I</span>nference in <span>P</span>roteome-wide <span>L</span>abel-free <span>Q</span>uantification</span>.”</span> <em>Mol Cell Proteomics</em> 19 (7): 1209–19.
-</div>
+<div id="lennart-martens" class="section level3">
+<h3>Lennart Martens</h3>
+<p><img src="figures/lennart.jpeg" alt="Milan" width="17%" style="float:left;padding:10px"/></p>
+<p>Lennart Martens is Full Professor of Systems Biology at Ghent University, group leader of the Computational Omics and Systems Biology (CompOmics) group at VIB, and Associate Director of the VIB-UGent C enter for Medical Biotechnology, all in Ghent, Belgium. He has been working in proteomics bioinformatics since his Master’s degree, which focused on the computational interpretation of peptide mass spectra. He then worked as a software developer and framework architect for a software company for a few years, before returning to Ghent University to pursue a Ph.D. focused on proteomics and proteomics informatics. During this time, he worked on the development of high-throughput peptide centric proteomics techniques and on bioinformatics tools to support these new approaches. In 2003 he started the PRIDE proteomics database at the EBI as a Marie Curie fellow of the European Commission. After obtaining his PhD, he rejoined the PRIDE group at EBI, which he coordinated for several years before moving back to Ghent University to take up his current position. Prof. Martens has been elected to the Human Proteome Organisation (HUPO) Council in 2016, and to the HUPO Executive Board in 2017. He received the 2014 Prometheus Award for Research Excellence from Ghent University, and the 2015 ‘Juan Pablo Albar’ Proteomics Pioneer Award from the European Proteomics Association (EUPA). An author on more than 200 peer-reviewed papers, he has also co- written two popular Wiley textbooks: Computational Methods for Mass Spectrometry Proteomics (ISBN: 978-0-470-51297-5), and Computational and Statistical Methods for Protein Quantification by Mass Spectrometry (ISBN: 978-1-119-96400-1). Lennart_Martens Martens is the president of EUPA since December 2020.</p>
+<p>Affiliation: Ghent University and VIB, Ghent, BE</p>
 </div>
 </div>
 
@@ -471,11 +361,6 @@ $(document).ready(function () {
 </script>
 
 <!-- code folding -->
-<script>
-$(document).ready(function () {
-  window.initializeCodeFolding("show" === "show");
-});
-</script>
 
 
 <!-- dynamically load mathjax for compatibility with self-contained -->
