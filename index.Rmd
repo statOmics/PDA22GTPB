@@ -47,12 +47,10 @@ You will also be requested to watch the following videos before attending the co
 
 ### 1. Bioinformatics for Proteomics
 
-- Slides: [Protein Identification](assets/martens_proteomics_bioinformatics_20190401.pdf)
-- Slides: [Quantification in MS proteomics](assets/martens_proteomics_quantification_20180530.pdf)
-- Slides: [Data Sharing](assets/DataSharingPDA19.pdf)
-- Slides: [Pathways](assets/PathwayDiscussionPDA19.pdf)
+- Slides Protein Identification: [pdf](assets/martens_protein_identification.pdf), [pptx](assets/martens_protein_identification.pptx)
+- Slides Data Sharing: [pdf](assets/martens_data_sharing.pdf),[pptx](assets/martens_data_sharing.pptx)
 
-- Tutorials: [Tutorials Bioinformatics for Proteomics](https://compomics.com/bioinformatics-for-proteomics/)  
+- [Tutorials Bioinformatics for Proteomics](https://compomics.com/bioinformatics-for-proteomics/)  
 
 
 ### 2. Statistics for Proteomics Data Analysis
@@ -84,9 +82,8 @@ You will also be requested to watch the following videos before attending the co
 ---
 
 ### Instructors
-
-- [Lieven Clement](./instructors.html)
-- [Lennart Martens](./instructors.html)
+- [Lieven Clement](./instructors.html#lieven)
+- [Lennart Martens](./instructors.html#lnnrt)
 
 ### License
 

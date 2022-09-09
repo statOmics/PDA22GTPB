@@ -8,8 +8,9 @@ output:
 ---
 
 # Instructors
+<a name="lieven"></a>
 
-### Lieven Clement
+### Lieven Clement 
 
 <img src="./figures/lieven.jpg" alt="Lieven" width="17%" style="float:left;padding:10px"/>
 
@@ -21,7 +22,9 @@ Affiliation: Ghent University, Ghent, BE
 </br>
 </br>
 
-### Lennart Martens
+<a name="lnnrt"></a>
+
+### Lennart Martens  
 
 <img src="./figures/lennart.jpeg" alt="Milan" width="17%" style="float:left;padding:10px"/>
 
