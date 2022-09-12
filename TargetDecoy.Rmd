@@ -12,6 +12,7 @@ output:
       toc_float: true
       highlight: tango
       number_sections: true
+      code_folding: "hide"
 linkcolor: blue
 urlcolor: blue
 citecolor: blue
@@ -36,13 +37,9 @@ library(ggplot2)
 # Introduction
 
 ![](figures/ProteomicsWorkflow.png)
+
 ![](figures/peptideSpectralMatching.png)
-
-- E-values: Probability that a random candidate peptide produces a higher score than the observed PSM score.
-
-
-- Probability that a random candidate peptide produces a higher score that the observed PSM score for a real search with OMSSA.
-
+Slide courtesy to Lennart Martens 
 ```{r}
 library(TargetDecoy)
 library(tidyverse)
@@ -52,50 +49,6 @@ names(hlp) <- names(hlp) %>%
     str_replace(pattern=":",replacement="_")
 hlp <- hlp %>% 
 mutate(omssa_evalue=as.double(omssa_evalue))
-hlp %>% 
-    filter(!is.na(omssa_evalue)) %>% 
-    ggplot(aes(omssa_evalue)) +
-    geom_histogram(breaks=seq(0,100,5)) +
-    xlab("E-value (%)") + 
-    ylab("frequency")
-```
-
-- E-value that we expect for a random spectrum and candidate peptide.
-
-```{r}
-data.frame(evalue=runif(20000,0,100)) %>%
-    ggplot(aes(evalue)) +
-    geom_histogram(breaks=seq(0,100,5)) +
-    xlab("E-value (%)") + 
-    ylab("frequency")
-```
-
-- Probability that a random candidate peptide produces a higher score than the observed PSM score for decoys in a real search with OMSSA.
-
-```{r}
-hlp %>% 
-    filter(isdecoy & !is.na(omssa_evalue)) %>% 
-    ggplot(aes(omssa_evalue)) +
-    geom_histogram(breaks=seq(0,100,5)) +
-    xlab("E-value (%)") + 
-    ylab("frequency")
-```
-
-- A bad hit is the random hit with the best score so it is also bound to have a low E-value.
-
-- If we look at E-values for all PSMs they are only useful as a score.
-
-- We should know the distribution of the maximum score of
-random candidate peptides when we want to do the statistics.
-
-```{r warning=FALSE}
-hlp %>% 
-    filter(!is.na(omssa_evalue)) %>% 
-    ggplot(aes(-log10(omssa_evalue))) +
-    geom_histogram(breaks=seq(0,1000,.5)) +
-    xlab("-log10(E-value)") + 
-    ylab("frequency") +
-    xlim(0,20) 
 ```
 # Concepts
 
@@ -106,23 +59,43 @@ names(hlp) <- names(hlp) %>% str_replace(pattern="-",replacement = "_")
 hlp <- hlp %>% mutate(ms_gf_specevalue=as.double(ms_gf_specevalue))
 ```
 
-```{r warning=FALSE}
-histAll <- hlp %>% 
-    filter(!is.na(ms_gf_specevalue)) %>% 
-    ggplot(aes(-log10(ms_gf_specevalue))) +
-    geom_histogram(breaks=seq(0,1000,.5)) +
-    xlab("-log10(E-value)") + 
-    ylab("frequency") +
-    xlim(0,32) +
-    ylim(0,1500)
-histAll
+```{r}
+library(mgcv)
+dec <- -log10(hlp$ms_gf_specevalue[hlp$isdecoy]) %>% na.exclude()
+tar <- -log10(hlp$ms_gf_specevalue[!hlp$isdecoy]) %>% na.exclude()
+
+breaks <- seq(0,30,.5)
+#binWidth <-2
+#breaks <- seq(floor(min(c(dec,tar))/binWidth)*binWidth,ceiling(max(c(dec,tar))/binWidth)*binWidth,binWidth)
+#code if we register the modes by substracting the mode from the target scores and  the decoy scores.
+#breaks=seq(-(ceiling(abs(min(c(dec,tar))/binWidth))+.5)*binWidth,(ceiling(max(c(dec,tar))/binWidth)+.5)*binWidth,binWidth)
+histDec <- hist(dec,breaks=breaks,plot = FALSE)
+histTar <- hist(tar,breaks=breaks,plot=FALSE)
+histSam <- hist(c(dec,tar),breaks=breaks, plot = FALSE)
+
+grid<-seq(0,30,.1)
+countsTarG<-data.frame(y=histTar$counts-histDec$counts,x=histTar$mids)
+countsTarG$y[countsTarG$y<0]<-0
+fitTarG<-gam(y~s(x),data=countsTarG,family=poisson)
+fitTarGrid<-exp(predict(fitTarG,newdata=data.frame(x=grid)))
+
+countsDec<-data.frame(y=histDec$counts,x=histDec$mids)
+fitDec<-gam(y~s(x),data=countsDec,family=poisson)
+fitSamBad<-exp(predict(fitDec,newdata=data.frame(x=grid)))*2
+
+plot(histSam,xlab="MS-GF+ Score",ylab="# PSMs",main="Pyrococcus Search",border="white",col="grey",cex.axis=1.5,cex.main=1.5,cex.lab=1.5,ylim=c(0,1500), axes =FALSE)
+axis(side=2,at=c(0,750,1500))
+axis(side=1,at=c(0,10,20,30))
+lines(grid,fitSamBad+fitTarGrid,col="black",lwd=2)
+lines(grid,fitSamBad,col="red",lwd=2)
+lines(grid,fitTarGrid,col="blue",lwd=2)
 ```
 
 Let $x$ be the PSM score 
 
 The scores will follow a mixture distribution:
 
-$$f(x) = \pi_bf_b(x)+(1-\pi_b)f_g(x),$$
+$$f(x) = \pi_b \mathbin{\color{red}{ f_b(x)}}+(1-\pi_b)\mathbin{\color{blue}{ f_g(x)}},$$
 We will return a list of PSMs by using the FDR:
 
 $$FDR = E\left[\frac{FP}{TP + FP}\right]$$
@@ -133,15 +106,20 @@ $$FDR = E\left[\frac{FP}{TP + FP}\right]$$
 
 Our list, typically consists of all PSMs with a score $x$ above a threshold t. 
 
+```{r warning=FALSE}
+plot(histSam,xlab="MS-GF+ Score",ylab="# PSMs",main="Pyrococcus Search",border="white",col="grey",cex.axis=1.5,cex.main=1.5,cex.lab=1.5,ylim=c(0,1500), axes =FALSE)
+axis(side=2,at=c(0,750,1500))
+axis(side=1,at=c(0,10,20,30))
+lines(grid,fitSamBad+fitTarGrid,col="black",lwd=2)
+lines(grid,fitSamBad,col="red",lwd=2)
+lines(grid,fitTarGrid,col="blue",lwd=2)
+text(pos=4,10,1430,label=expression(x >= t),col="darkorchid4",cex=2)
+rect(10,-10,30,1500,lwd=2,border="darkorchid4")
+```
+
+
 - So we know TP + FP: 
 $$\text{#PSMs with } x \geq t$$
-
-```{r warning=FALSE}
-histAll #+ 
-#  ylim(-50,1500) +
-#  annotate("rect",xmin = 7, xmax = 30, ymin = -50, ymax = 1400,fill=NA, color="black") +
-#  geom_text(data = NULL, x = 7, y = 1500, label = expression("x">="t"),hjust=0)
-```
 
 - To estimate the FDR we only have to estimate the expected number of PSMs that are bad hits with a score $x$ above the threshold $t$.
 

@@ -8,20 +8,30 @@ navbar:
     - text: "Topics"
       icon: fa-chalkboard-teacher
       menu:
-      - text: Quantification - Preprocessing
+      - text: 1.1. Protein Identification
+        href: assets/martens_protein_identification.pdf
+      - text: 1.2. Data Sharing
+        href: assets/martens_data_sharing.pdf
+      - text: 2.1. Identification - FDR
         href: pda_quantification_preprocessing.html
-      - text: Wrap-up Preprocessing - Peptide-Level-Models
+      - text: 2.2.1. Quantification - Preprocessing
+        href: pda_quantification_preprocessing.html
+      - text: 2.2.2. Wrap-up Preprocessing - Peptide-Level-Models
         href: pda_robustSummarisation_peptideModels.html
-      - text: Quantification - Differential Abundance Analysis
+      - text: 2.3.1. Quantification - Differential Abundance Analysis
         href: pda_quantification_inference.html
-      - text: Wrap-up DA - Blocking
+      - text: 2.3.2. Wrap-up DA - Blocking
         href: pda_blocking_wrapup.html
     - text: "Exercises"
       icon: fa-laptop
       menu:
-      - text: Quantification - Preprocessing
+      - text: 1. Bioinformatics for Proteomics
+        href: https://www.compomics.com/bioinformatics-for-proteomics/
+      - text: 2.1. Target Decoy QC
+        href: TargetDecoy.html
+      - text: 2.2. Quantification - Preprocessing
         href: pda_tutorialPreprocessing.html
-      - text: Quantification - Design
+      - text: 2.3. Quantification - Design
         href: pda_tutorialDesign.html
   right:
     - icon: fab fa-github      
