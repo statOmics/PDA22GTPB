@@ -12,8 +12,8 @@ navbar:
         href: assets/martens_protein_identification.pdf
       - text: 1.2. Data Sharing
         href: assets/martens_data_sharing.pdf
-      - text: 2.1. Identification - FDR
-        href: pda_quantification_preprocessing.html
+      - text: 2.1. Identification - FDR - QC
+        href: TargetDecoy.html
       - text: 2.2.1. Quantification - Preprocessing
         href: pda_quantification_preprocessing.html
       - text: 2.2.2. Wrap-up Preprocessing - Peptide-Level-Models
@@ -28,7 +28,7 @@ navbar:
       - text: 1. Bioinformatics for Proteomics
         href: https://www.compomics.com/bioinformatics-for-proteomics/
       - text: 2.1. Target Decoy QC
-        href: TargetDecoy.html
+        href: TargetDecoyTutorial.html
       - text: 2.2. Quantification - Preprocessing
         href: pda_tutorialPreprocessing.html
       - text: 2.3. Quantification - Design
