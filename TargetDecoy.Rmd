@@ -40,6 +40,8 @@ library(ggplot2)
 
 ![](figures/peptideSpectralMatching.png)
 Slide courtesy to Lennart Martens 
+
+## Why are statistics out of the window
 ```{r}
 library(TargetDecoy)
 library(tidyverse)
@@ -50,6 +52,68 @@ names(hlp) <- names(hlp) %>%
 hlp <- hlp %>% 
 mutate(omssa_evalue=as.double(omssa_evalue))
 ```
+
+
+- E-values: Probability that a random candidate peptide produces a higher score than the observed PSM score.
+
+
+- Probability that a random candidate peptide produces a higher score that the observed PSM score for a real search with OMSSA.
+
+```{r}
+library(TargetDecoy)
+library(tidyverse)
+data("ModSwissXT")
+hlp <- TargetDecoy:::.getDF(ModSwissXT) 
+names(hlp) <- names(hlp) %>%
+    str_replace(pattern=":",replacement="_")
+hlp <- hlp %>% 
+mutate(omssa_evalue=as.double(omssa_evalue))
+hlp %>% 
+    filter(!is.na(omssa_evalue)) %>% 
+    ggplot(aes(omssa_evalue)) +
+    geom_histogram(breaks=seq(0,100,5)) +
+    xlab("E-value (%)") + 
+    ylab("frequency")
+```
+
+- E-value we expect for a random spectrum and candidate peptide.
+
+```{r}
+data.frame(evalue=runif(20000,0,100)) %>%
+    ggplot(aes(evalue)) +
+    geom_histogram(breaks=seq(0,100,5)) +
+    xlab("E-value (%)") + 
+    ylab("frequency")
+```
+
+- Probability that a random candidate peptide produces a higher score than the observed PSM score for decoys in a real search with OMSSA.
+
+```{r}
+hlp %>% 
+    filter(isdecoy & !is.na(omssa_evalue)) %>% 
+    ggplot(aes(omssa_evalue)) +
+    geom_histogram(breaks=seq(0,100,5)) +
+    xlab("E-value (%)") + 
+    ylab("frequency")
+```
+
+- A bad hit is the random hit with the best score so it is also bound to have a low E-value.
+
+- If we look at E-values for all PSMs they are only useful as a score.
+
+- We should know the distribution of the maximum score of
+random candidate peptides when we want to do the statistics.
+
+```{r warning=FALSE}
+hlp %>% 
+    filter(!is.na(omssa_evalue)) %>% 
+    ggplot(aes(-log10(omssa_evalue))) +
+    geom_histogram(breaks=seq(0,1000,.5)) +
+    xlab("-log10(E-value)") + 
+    ylab("frequency") +
+    xlim(0,20) 
+```
+
 # Concepts
 
 ## Basic Statistical Concepts
@@ -96,12 +160,28 @@ Let $x$ be the PSM score
 The scores will follow a mixture distribution:
 
 $$f(x) = \pi_b \mathbin{\color{red}{ f_b(x)}}+(1-\pi_b)\mathbin{\color{blue}{ f_g(x)}},$$
+What is the posterior error probability (PEP) or probability that a PSM with a score is a bad hit. 
+
+$$
+\text{PEP(x)} = \frac{\pi_b f_b(x)}{f(x)}
+$$
+
 We will return a list of PSMs by using the FDR:
 
 $$FDR = E\left[\frac{FP}{TP + FP}\right]$$
 
 - FP: number of false positives, bad hits
 - TP: number of true positives, good hits
+
+$$
+\begin{array}{lcl}
+\text{FDR}(x\geq t)&=& \frac{\pi_b\int\limits_{x=t}^{+\infty}f_b(x)}{\int\limits_{x=t}^{+\infty}f(x)}\\
+&=&\frac{\pi_b[1-F_b(t)]}{1-F(t)}
+\end{array}
+$$
+
+
+
 
 
 Our list, typically consists of all PSMs with a score $x$ above a threshold t. 
@@ -113,15 +193,22 @@ axis(side=1,at=c(0,10,20,30))
 lines(grid,fitSamBad+fitTarGrid,col="black",lwd=2)
 lines(grid,fitSamBad,col="red",lwd=2)
 lines(grid,fitTarGrid,col="blue",lwd=2)
-text(pos=4,10,1430,label=expression(x >= t),col="darkorchid4",cex=2)
-rect(10,-10,30,1500,lwd=2,border="darkorchid4")
+text(pos=4,5,1430,label=expression(x >= t),col="darkorchid4",cex=2)
+rect(5,-10,30,1500,lwd=2,border="darkorchid4")
 ```
 
 
 - So we know how many PSMs we return, i.e. TP + FP: 
-$$\text{#PSMs with } x \geq t$$
+$$\text{#PSMs with } x \geq t$$ 
 
-- To estimate the FDR we only have to estimate the expected number of PSMs that are bad hits with a score $x$ above the threshold $t$.
+and we can also estimate the probability on a target above the threshold empirically:
+
+$$1-\hat{\text{F}}(t) = \frac{\text{#PSMs with } x \geq t}{\text{#PSMs}}$$ 
+
+
+
+
+- So to estimate the FDR we only have to estimate the expected number of PSMs that are bad hits with a score $x$ above the threshold $t$.
 
 $$\widehat{\text{FDR}}(t) = \frac{E\left[\#\text{Bad PSM hits with } x \geq t\right]}{\text{#PSMs with } x \geq t}$$
 
@@ -133,7 +220,7 @@ $$\widehat{\text{FDR}}(t) = \frac{E\left[\#\text{Bad PSM hits with } x \geq t\ri
 - Concatenated search is most popular
 - Advantage, a number of bad hits already matches with decoys
 
-$\rightarrow$ we know that this are bad hits
+$\rightarrow$ we know that these are bad hits
 
 $\rightarrow$ we have to infer on less target PSMs.
 
@@ -157,17 +244,18 @@ If we rewrite the FDR we can see the TDA assumptions:
 
 $$
 \begin{array}{lcl}
-\widehat{\text{FDR}}(x\geq t)&=&\frac{\text{# Decoys} \geq t}{\text{# Targets} \geq t}\\
-&=&\frac{\frac{\text{# Decoys}}{\text{# Targets}}\frac{\text{# Decoys with }x \geq t}{\text{# Decoys}}}{\frac{\text{# Targets with } x \geq t}{\text{# Targets}}}\\
-&=&\frac{\frac{\hat{\text{E}}\left[\text{# Bad Targets}\right]}{\text{# Targets}}\frac{\hat{\text{E}}\left[\text{# Bad Targets with }x \geq t\right]}{\hat{\text{E}}\left[\text{# Bad targets}\right]}}{\frac{\text{# Targets with } x \geq t}{\text{# Targets}}} \\
-&=&\frac{\hat{\text{P}}\left[\text{Bad  Target} \right]\times\hat{\text{P}}\left[\text{Bad  Target}\vert x \geq t \right]}{\hat{\text{P}}\left[\text{Target}\vert x \geq> t\right]}
+\widehat{\text{FDR}}(x\geq t)&=&\frac{\text{# Decoys} \geq t}{\text{# Targets} \geq t}\\\\
+&=&\frac{\frac{\text{# Decoys}}{\text{# Targets}}\frac{\text{# Decoys with }x \geq t}{\text{# Decoys}}}{\frac{\text{# Targets with } x \geq t}{\text{# Targets}}}\\\\
+&=&\frac{\frac{\hat{\text{E}}\left[\text{# Bad Targets}\right]}{\text{# Targets}}\frac{\hat{\text{E}}\left[\text{# Bad Targets with }x \geq t\right]}{\hat{\text{E}}\left[\text{# Bad targets}\right]}}{\frac{\text{# Targets with } x \geq t}{\text{# Targets}}} \\\\
+&=&\frac{\hat{\text{P}}\left[\text{Bad  Target} \right]\times\hat{\text{P}}\left[\text{Bad  Target}\vert x \geq t \right]}{\hat{\text{P}}\left[\text{Target}\vert x \geq t\right]}\\\\
+&=&\frac{\hat\pi_b [1-F_b(t)]}{1-F(t)}
 \end{array}
 $$
 
 
 So the TDA has the following assumptions: 
 
-1. A bad hit is equally likely to match to a decoy as to a target sequence. $\rightarrow$ we can thus estimate the fraction of bad hits or the probability on a bad hit as $$\hat{\text{P}}\left[\text{Bad target PSM}\right] = \frac{\# \text{Decoys}}{\# \text{Targets}}$$
+1. A bad hit is equally likely to match to a decoy as to a target sequence. $\rightarrow$ we can thus estimate the fraction of bad hits or the probability on a bad hit as $$\hat{\pi}_b = \frac{\# \text{Decoys}}{\# \text{Targets}}$$
 
 2. Bad target PSM scores and decoy PSM scores are equaly distributed.
 
@@ -184,6 +272,7 @@ $$\hat{\text{P}}\left[\text{decoy with score } x \leq t\right] = \frac{\# \text{
 $$
 \hat{\text{P}}\left[\text{target with score } x \leq t\right] = \frac{\# \text{target with score } x \leq t}{\# \text{targets}}
 $$
+
 If the two distributions are the same the dots of the P-P plot should follow the 1-1 line. 
 
 This will not be the case. We expect the distribution of the target PSMs: 
