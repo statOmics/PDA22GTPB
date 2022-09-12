@@ -426,18 +426,22 @@
     },
     "TargetDecoy": {
       "Package": "TargetDecoy",
-      "Version": "1.2.0",
-      "Source": "Bioconductor",
-      "git_url": "https://git.bioconductor.org/packages/TargetDecoy",
-      "git_branch": "RELEASE_3_15",
-      "git_last_commit": "195cfe1",
-      "git_last_commit_date": "2022-04-26",
-      "Hash": "cf5dab914e64ce8e21e04b6237f072c9",
+      "Version": "1.3.2",
+      "Source": "GitHub",
+      "RemoteType": "github",
+      "RemoteHost": "api.github.com",
+      "RemoteUsername": "statOmics",
+      "RemoteRepo": "TargetDecoy",
+      "RemoteRef": "master",
+      "RemoteSha": "5ee8a46406d8c8cbf180a2e02409c75992b33f16",
+      "Hash": "2b35cd0ebb9fdc1db5c077f268e94629",
       "Requirements": [
         "ggplot2",
         "ggpubr",
+        "miniUI",
         "mzID",
-        "mzR"
+        "mzR",
+        "shiny"
       ]
     },
     "XML": {
@@ -1487,6 +1491,17 @@
       "Hash": "18e9c28c1d3ca1560ce30658b22ce104",
       "Requirements": []
     },
+    "miniUI": {
+      "Package": "miniUI",
+      "Version": "0.1.1.1",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "fec5f52652d60615fdb3957b3d74324a",
+      "Requirements": [
+        "htmltools",
+        "shiny"
+      ]
+    },
     "minqa": {
       "Package": "minqa",
       "Version": "1.2.4",
@@ -2045,6 +2060,16 @@
       "Requirements": [
         "R6",
         "stringr"
+      ]
+    },
+    "sessioninfo": {
+      "Package": "sessioninfo",
+      "Version": "1.2.2",
+      "Source": "Repository",
+      "Repository": "CRAN",
+      "Hash": "3f9796a8d0a0e8c6eb49a4b029359d1f",
+      "Requirements": [
+        "cli"
       ]
     },
     "shiny": {
