@@ -187,6 +187,7 @@ $$
 If the two distributions are the same the dots of the P-P plot should follow the 1-1 line. 
 
 This will not be the case. We expect the distribution of the target PSMs: 
+
 - to be similarly distributed as the decoys for low scores
 - and enriched with many high scores corresponding to target PSMs which are matching to the proper peptide sequence in the data base.
 
