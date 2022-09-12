@@ -58,7 +58,7 @@ You will also be requested to watch the following videos before attending the co
 #### 2.0. Software and Data
 
 - [Install software](./software.html)
-- [Download data](https://github.com/statOmics/PDA/archive/refs/heads/data.zip)
+- [Download data](https://github.com/statOmics/PDA22GTPB/archive/refs/heads/data.zip)
 
 - More information on our tools can be found in our papers [@goeminne2016], [@goeminne2020] and [@sticker2020]. Please refer to our work when using our tools. 
 

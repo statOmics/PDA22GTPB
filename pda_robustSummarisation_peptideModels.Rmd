@@ -23,7 +23,7 @@ bibliography: msqrob2.bib
 
 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a>
 
-This is part of the online course [Proteomics Data Analysis (PDA)](https://statomics.github.io/PDA/)
+This is part of the online course [Proteomics Data Analysis (PDA)](https://statomics.github.io/PDA22GTPB/)
 
 
 ```{r, warning=FALSE, message=FALSE}
@@ -42,7 +42,7 @@ library(gridExtra)
 <details><summary> Click to see background and code </summary><p>
 1. Import data
 ```{r}
-proteinsFile <- "https://raw.githubusercontent.com/statOmics/PDA/data/quantification/cptacAvsB_lab3/proteinGroups.txt"
+proteinsFile <- "https://raw.githubusercontent.com/statOmics/PDA22GTPB/data/quantification/cptacAvsB_lab3/proteinGroups.txt"
 
 ecols <- grep("LFQ\\.intensity\\.", names(read.delim(proteinsFile)))
 
@@ -241,7 +241,7 @@ compBoxPlot
 1. We use a peptides.txt file from MS-data quantified with maxquant that 
 contains MS1 intensities summarized at the peptide level. 
 ```{r}
-peptidesFile <- "https://raw.githubusercontent.com/statOmics/PDA/data/quantification/fullCptacDatasSetNotForTutorial/peptides.txt"
+peptidesFile <- "https://raw.githubusercontent.com/statOmics/PDA22GTPB/data/quantification/fullCptacDatasSetNotForTutorial/peptides.txt"
 ```
 
 2. Maxquant stores the intensity data for the different samples in columnns that start with Intensity. We can retreive the column names with the intensity data with the code below: 

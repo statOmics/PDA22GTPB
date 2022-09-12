@@ -23,7 +23,7 @@ bibliography: msqrob2.bib
 
 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a>
 
-This is part of the online course [Proteomics Data Analysis (PDA)](https://statomics.github.io/PDA/)
+This is part of the online course [Proteomics Data Analysis (PDA)](https://statomics.github.io/PDA22GTPB/)
 
 # Background
 This case-study is a subset of the data of the 6th study of the Clinical
@@ -65,7 +65,7 @@ library(QFeatures)
 library(msqrob2)
 library(plotly)
 
-peptidesFile <- "https://raw.githubusercontent.com/statOmics/SGA2020/data/quantification/cptacAvsB_lab3/peptides.txt"
+peptidesFile <- "https://raw.githubusercontent.com/statOmics/PDA22GTPB/data/quantification/cptacAvsB_lab3/peptides.txt"
 
 ecols <- grep(
   "Intensity\\.", 

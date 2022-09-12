@@ -23,7 +23,7 @@ bibliography: msqrob2.bib
 
 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a>
 
-This is part of the online course [Proteomics Data Analysis (PDA)](https://statomics.github.io/PDA/)
+This is part of the online course [Proteomics Data Analysis (PDA)](https://statomics.github.io/PDA22GTPB/)
 
 # Import Data and Preprocessing 
 
@@ -37,9 +37,9 @@ library(msqrob2)
 library(plotly)
 library(gridExtra)
 
-peptidesFile <- "https://raw.githubusercontent.com/statOmics/PDA/data/quantification/mouseTcell/peptidesRCB.txt"
-peptidesFile2 <- "https://raw.githubusercontent.com/statOmics/PDA/data/quantification/mouseTcell/peptidesCRD.txt"
-peptidesFile3 <- "https://raw.githubusercontent.com/statOmics/PDA/data/quantification/mouseTcell/peptides.txt"
+peptidesFile <- "https://raw.githubusercontent.com/statOmics/PDA22GTPB/data/quantification/mouseTcell/peptidesRCB.txt"
+peptidesFile2 <- "https://raw.githubusercontent.com/statOmics/PDA22GTPB/data/quantification/mouseTcell/peptidesCRD.txt"
+peptidesFile3 <- "https://raw.githubusercontent.com/statOmics/PDA22GTPB/data/quantification/mouseTcell/peptides.txt"
 
 ecols <- grep("Intensity\\.", names(read.delim(peptidesFile)))
 pe <- readQFeatures(

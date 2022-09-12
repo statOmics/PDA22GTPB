@@ -35,7 +35,7 @@ navbar:
         href: pda_tutorialDesign.html
   right:
     - icon: fab fa-github      
-      href: https://github.com/statOmics/PDA
+      href: https://github.com/statOmics/PDA22GTPB
     - text: "statOmics"
       href: http://statomics.github.io/
 output:
