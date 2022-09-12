@@ -118,12 +118,12 @@ rect(10,-10,30,1500,lwd=2,border="darkorchid4")
 ```
 
 
-- So we know TP + FP: 
+- So we know how many PSMs we return, i.e. TP + FP: 
 $$\text{#PSMs with } x \geq t$$
 
 - To estimate the FDR we only have to estimate the expected number of PSMs that are bad hits with a score $x$ above the threshold $t$.
 
-$$\widehat{\text{FDR}}(t) = \frac{E\left[FP\right]}{\text{#PSMs with } x \geq t}$$
+$$\widehat{\text{FDR}}(t) = \frac{E\left[\#\text{Bad PSM hits with } x \geq t\right]}{\text{#PSMs with } x \geq t}$$
 
 
 ## Competitive target decoy approach:
@@ -131,7 +131,11 @@ $$\widehat{\text{FDR}}(t) = \frac{E\left[FP\right]}{\text{#PSMs with } x \geq t}
 - Search against decoy database to generate representative bad hits
 - Reverse database is popular
 - Concatenated search is most popular
-- Advantage, a number of bad hits already matches with decoys $\rightarrow$ FDR problem less problematic.
+- Advantage, a number of bad hits already matches with decoys
+
+$\rightarrow$ we know that this are bad hits
+
+$\rightarrow$ we have to infer on less target PSMs.
 
 ```{r warning=FALSE}
 hlp %>% 
@@ -150,13 +154,11 @@ So our estimated FDR becomes
 
 $$\widehat{\text{FDR}}(x\geq t) = \frac{\text{# Decoys} \geq t}{\text{# Targets} \geq t}$$
 If we rewrite the FDR we can see the TDA assumptions:
-$$
-\widehat{\text{FDR}}(x\geq t) = \frac{\frac{\text{# Decoys}}{\text{# Targets}}\frac{\text{# Decoys with }x \geq t}{\text{# Decoys}}}{\frac{\text{# Targets with } x \geq t}{\text{# Targets}}}$$
-
 
 $$
 \begin{array}{lcl}
-\widehat{\text{FDR}}(x\geq t)&=&\frac{\frac{\text{# Decoys}}{\text{# Targets}}\frac{\text{# Decoys with }x \geq t}{\text{# Decoys}}}{\frac{\text{# Targets with } x \geq t}{\text{# Targets}}}\\
+\widehat{\text{FDR}}(x\geq t)&=&\frac{\text{# Decoys} \geq t}{\text{# Targets} \geq t}\\
+&=&\frac{\frac{\text{# Decoys}}{\text{# Targets}}\frac{\text{# Decoys with }x \geq t}{\text{# Decoys}}}{\frac{\text{# Targets with } x \geq t}{\text{# Targets}}}\\
 &=&\frac{\frac{\hat{\text{E}}\left[\text{# Bad Targets}\right]}{\text{# Targets}}\frac{\hat{\text{E}}\left[\text{# Bad Targets with }x \geq t\right]}{\hat{\text{E}}\left[\text{# Bad targets}\right]}}{\frac{\text{# Targets with } x \geq t}{\text{# Targets}}} \\
 &=&\frac{\hat{\text{P}}\left[\text{Bad  Target} \right]\times\hat{\text{P}}\left[\text{Bad  Target}\vert x \geq t \right]}{\hat{\text{P}}\left[\text{Target}\vert x \geq> t\right]}
 \end{array}
