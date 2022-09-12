@@ -151,15 +151,15 @@ plot(histSam,xlab="MS-GF+ Score",ylab="# PSMs",main="Pyrococcus Search",border="
 axis(side=2,at=c(0,750,1500))
 axis(side=1,at=c(0,10,20,30))
 lines(grid,fitSamBad+fitTarGrid,col="black",lwd=2)
-lines(grid,fitSamBad,col="red",lwd=2)
-lines(grid,fitTarGrid,col="blue",lwd=2)
+lines(grid,fitSamBad,col="#FF9900",lwd=2)
+lines(grid,fitTarGrid,col="#009900",lwd=2)
 ```
 
 Let $x$ be the PSM score 
 
 The scores will follow a mixture distribution:
 
-$$f(x) = \pi_b \mathbin{\color{red}{ f_b(x)}}+(1-\pi_b)\mathbin{\color{blue}{ f_g(x)}},$$
+$$f(x) = \pi_b \mathbin{\color{orange}{ f_b(x)}}+(1-\pi_b)\mathbin{\color{green}{ f_g(x)}},$$
 What is the posterior error probability (PEP) or probability that a PSM with a score is a bad hit. 
 
 $$
@@ -191,8 +191,8 @@ plot(histSam,xlab="MS-GF+ Score",ylab="# PSMs",main="Pyrococcus Search",border="
 axis(side=2,at=c(0,750,1500))
 axis(side=1,at=c(0,10,20,30))
 lines(grid,fitSamBad+fitTarGrid,col="black",lwd=2)
-lines(grid,fitSamBad,col="red",lwd=2)
-lines(grid,fitTarGrid,col="blue",lwd=2)
+lines(grid,fitSamBad,col="#FF9900",lwd=2)
+lines(grid,fitTarGrid,col="#009900",lwd=2)
 text(pos=4,5,1430,label=expression(x >= t),col="darkorchid4",cex=2)
 rect(5,-10,30,1500,lwd=2,border="darkorchid4")
 ```
@@ -296,7 +296,7 @@ for (x in quantile(c(y1,y2),c(0,.01,.02,seq(0.1,1,.1))))
 par(mfrow=c(1,2))
 hist(y2,breaks=breaks,main="Pyrococcus MSGF+",cex.axis=1.5,cex.lab=1.5,cex.main=1.5,col="grey")
 decHist<-hist(y1,breaks=breaks,plot=FALSE)
-points(decHist$mids,decHist$counts,col="red",type="h",lwd=2)
+points(decHist$mids,decHist$counts,col="#FF9900",type="h",lwd=2)
 abline(v=x,col="blue",lwd=2)
 plot(F1(y2),F2(y2),xlab="ECDF Targets",ylab="ECDF Decoys",cex=.4,main="P-P plot",cex.axis=1.5,cex.lab=1.5,cex.main=1.5,col="grey",pch=19)
 abline(a=0,b=pi0)

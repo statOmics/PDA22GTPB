@@ -1,15 +1,15 @@
-#  Proteomics Data Analysis 2021 - PDA21
+#  Proteomics Data Analysis 22 for GTPB
 
-[![Render and Deploy](https://github.com/statOmics/PDA21/workflows/Render%20and%20Deploy/badge.svg)](https://github.com/statOmics/PDA21/actions)
+[![Render and Deploy](https://github.com/statOmics/PDA22GTPB/workflows/Render%20and%20Deploy/badge.svg)](https://github.com/statOmics/PDA22GTPB/actions)
 
-Course site for Proteomics Data Analysis 2021 (PDA 2021)
+Course site for Proteomics Data Analysis 2022  (PDA22) for GTPB
 
-https://statomics.github.io/PDA21/
+https://statomics.github.io/PDA22GTPB/
 
 
 ### Issues
 
-If you encounter any problems related to the course material (e.g. package installation problems, bugs in the code, typos, ...), please consider [posting an issue on GitHub](https://github.com/statOmics/PDA21/issues).
+If you encounter any problems related to the course material (e.g. package installation problems, bugs in the code, typos, ...), please consider [posting an issue on GitHub](https://github.com/statOmics/PDA22GTPB/issues).
 
 
 

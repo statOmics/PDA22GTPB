@@ -14,8 +14,12 @@ output:
 
 <a rel="license" href="https://creativecommons.org/licenses/by-nc-sa/4.0"><img alt="Creative Commons License" style="border-width:0" src="https://i.creativecommons.org/l/by-nc-sa/4.0/88x31.png" /></a>
 
+# Install R and Rstudio 
 - Install [R version 4.1 or higher] (https://cran.r-project.org/)
 - Install [Rstudio](https://www.rstudio.com/products/rstudio/download/)
+
+# Install *msqrob2*
+
 - Install *msqrob2*, start R and run the following command.
 
 ```
@@ -47,4 +51,24 @@ pe <- msqrob(pe,i="protein",formula=~condition,modelColumnName="rlm")
 getCoef(rowData(pe[["protein"]])$rlm[[1]])
 ```
 
+# Install *TargetDecoy* for QC of decoys
 
+- Install *TargetDecoy*, start R and run the following command.
+
+```
+if(!requireNamespace("BiocManager", quietly = TRUE)) {
+ install.packages("BiocManager")
+}
+if(!requireNamespace("remotes", quietly = TRUE)) {
+ BiocManager::install("remotes")
+}
+BiocManager::install("statomics/TargetDecoy")
+```
+
+- Check if your installation is working with the following example
+
+```
+library(TargetDecoy)
+data("ModSwiss")
+evalTargetDecoys(ModSwiss,"isdecoy","ms-gf:evalue")
+```

@@ -126,7 +126,7 @@ Hence, the proportion of bad hits \\( \pi_b \\) is estimated as the number of de
 
 The Pyrococcus furiosus (strain ATCC 43587 / DSM 3638 / JCM 8422 / Vc1) reference proteome. The resulting database has 2,051 proteins in total ([https://www.uniprot.org/uniprot/?query=taxonomy:186497](https://www.uniprot.org/uniprot/?query=taxonomy:186497), taxonomy:"Pyrococcus furiosus (strain ATCC 43587 / DSM 3638 / JCM 8422 / Vc1) [186497]").
 
-The data can be found on [https://github.com/GTPB/PDA22/tree/data](https://github.com/GTPB/PDA22/tree/data).
+The data can be found on [https://github.com/statOmics/PDA22GTPB/tree/data](https://github.com/statOmics/PDA22GTPB/tree/data).
 
 We will use the mzid file for the pyrococcus example, which can be found at data/identification/pyrococcusMSGF+.mzid.
 
@@ -146,7 +146,7 @@ library(mzID)
 4. Download data in your working directory.  You can skip this step if you downloaded all data on your computer.  
 
 ```{r}
-download.file("https://raw.githubusercontent.com/GTPB/PDA19/data/identification/pyrococcusMSGF%2B.mzid","pyrococcusMSGF+.mzid")
+download.file("https://raw.githubusercontent.com/statOmics/PDA22GTPB/data/identification/pyrococcusMSGF%2B.mzid","pyrococcusMSGF+.mzid")
 ```
 
 5. Set a path to your working directory and import the mzID file in R.
@@ -177,7 +177,7 @@ Both type of deviations should be of concern as they indicate that the FDR retur
 
 # Exercises
 
-1. Download all the data from [Download data](https://github.com/statOmics/PDA/archive/refs/heads/data.zip).
+1. All data can be downloaded via this link: [Download data](https://github.com/statOmics/PDA22GTPB/archive/refs/heads/data.zip).
 
 2. Unzip the data 
 
