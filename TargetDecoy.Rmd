@@ -41,7 +41,8 @@ library(ggplot2)
 ![](figures/peptideSpectralMatching.png)
 Slide courtesy to Lennart Martens 
 
-## Why are statistics out of the window
+## Why did Lennart mention that "statistics were out of the window"
+
 ```{r}
 library(TargetDecoy)
 library(tidyverse)
@@ -76,7 +77,7 @@ hlp %>%
     ylab("frequency")
 ```
 
-- E-value we expect for a random spectrum and candidate peptide.
+- E-value we expect for an observed spectrum and a random candidate peptide.
 
 ```{r}
 data.frame(evalue=runif(20000,0,100)) %>%
@@ -160,11 +161,16 @@ Let $x$ be the PSM score
 The scores will follow a mixture distribution:
 
 $$f(x) = \pi_b \mathbin{\color{orange}{ f_b(x)}}+(1-\pi_b)\mathbin{\color{green}{ f_g(x)}},$$
-What is the posterior error probability (PEP) or probability that a PSM with a score is a bad hit. 
+What is the local fdr also referred to as the posterior error probability (PEP), probability that a PSM with a score $x$ is a bad hit. 
 
 $$
-\text{PEP(x)} = \frac{\pi_b f_b(x)}{f(x)}
+\begin{array}{lcl}
+\text{fdr}(x) &=&\text{PEP(x)}\\
+&=& \text{P}[\text{bad hit} \vert X=x]\\
+&=& \frac{\pi_b f_b(x)}{f(x)}
+\end{array}
 $$
+
 
 We will return a list of PSMs by using the FDR:
 
@@ -175,7 +181,9 @@ $$FDR = E\left[\frac{FP}{TP + FP}\right]$$
 
 $$
 \begin{array}{lcl}
-\text{FDR}(x\geq t)&=& \frac{\pi_b\int\limits_{x=t}^{+\infty}f_b(x)}{\int\limits_{x=t}^{+\infty}f(x)}\\
+\text{FDR}(x\geq t) &=&
+\text{P}[\text{bad hit }\vert X \geq t]\\\\
+&=&\frac{\pi_b\int\limits_{x=t}^{+\infty}f_b(x)}{\int\limits_{x=t}^{+\infty}f(x)}\\\\
 &=&\frac{\pi_b[1-F_b(t)]}{1-F(t)}
 \end{array}
 $$
@@ -183,8 +191,9 @@ $$
 
 
 
+- So the FDR is a set property, it measure the probability on a bad hit in the set of PSMs with scores $X\geq t$.
 
-Our list, typically consists of all PSMs with a score $x$ above a threshold t. 
+Our list, thus consists of all PSMs with a score $x$ above a threshold t. 
 
 ```{r warning=FALSE}
 plot(histSam,xlab="MS-GF+ Score",ylab="# PSMs",main="Pyrococcus Search",border="white",col="grey",cex.axis=1.5,cex.main=1.5,cex.lab=1.5,ylim=c(0,1500), axes =FALSE)
@@ -210,10 +219,10 @@ $$1-\hat{\text{F}}(t) = \frac{\text{#PSMs with } x \geq t}{\text{#PSMs}}$$
 
 - So to estimate the FDR we only have to estimate the expected number of PSMs that are bad hits with a score $x$ above the threshold $t$.
 
-$$\widehat{\text{FDR}}(t) = \frac{E\left[\#\text{Bad PSM hits with } x \geq t\right]}{\text{#PSMs with } x \geq t}$$
+$$\widehat{\text{FDR}}(t) = \frac{E\left[\#\text{Bad PSM hits with } X \geq t\right]}{\text{#PSMs with } x \geq t}$$
 
 
-## Competitive target decoy approach:
+## Competitive target decoy approach
 
 - Search against decoy database to generate representative bad hits
 - Reverse database is popular
@@ -246,9 +255,9 @@ $$
 \begin{array}{lcl}
 \widehat{\text{FDR}}(x\geq t)&=&\frac{\text{# Decoys} \geq t}{\text{# Targets} \geq t}\\\\
 &=&\frac{\frac{\text{# Decoys}}{\text{# Targets}}\frac{\text{# Decoys with }x \geq t}{\text{# Decoys}}}{\frac{\text{# Targets with } x \geq t}{\text{# Targets}}}\\\\
-&=&\frac{\frac{\hat{\text{E}}\left[\text{# Bad Targets}\right]}{\text{# Targets}}\frac{\hat{\text{E}}\left[\text{# Bad Targets with }x \geq t\right]}{\hat{\text{E}}\left[\text{# Bad targets}\right]}}{\frac{\text{# Targets with } x \geq t}{\text{# Targets}}} \\\\
-&=&\frac{\hat{\text{P}}\left[\text{Bad  Target} \right]\times\hat{\text{P}}\left[\text{Bad  Target}\vert x \geq t \right]}{\hat{\text{P}}\left[\text{Target}\vert x \geq t\right]}\\\\
-&=&\frac{\hat\pi_b [1-F_b(t)]}{1-F(t)}
+&=&\frac{\frac{\hat{\text{E}}\left[\text{# Bad Targets}\right]}{\text{# Targets}}\frac{\hat{\text{E}}\left[\text{# Bad Targets with }X \geq t\right]}{\hat{\text{E}}\left[\text{# Bad targets}\right]}}{\frac{\text{# Targets with } x \geq t}{\text{# Targets}}} \\\\
+&=&\frac{\hat{\text{P}}\left[\text{Bad  Target} \right]\times\hat{\text{P}}\left[\text{Bad  Target}\vert X \geq t \right]}{\hat{\text{P}}\left[\text{Target}\vert X \geq t\right]}\\\\
+&=&\frac{\hat\pi_b [1-\hat{F}_b(t)]}{1-\hat{F}(t)}
 \end{array}
 $$
 
@@ -259,13 +268,15 @@ So the TDA has the following assumptions:
 
 2. Bad target PSM scores and decoy PSM scores are equaly distributed.
 
-We will evaluate these assumptions using diagnostic plots that compares the empirical distribution of decoy and target PSM scores. 
+# Diagnostic plots for the TDA
+
+We will evaluate the TDA assumptions using diagnostic plots that compares the empirical distribution of decoy and target PSM scores. 
 
 - Histograms
 - P-P plots
 
 
-With P-P plots will plot for each observed PSM score $t$ the empirical probability to observe a decoy with score $x \leq t$ to the empirical probability to observe a target with score $ x \leq t$: 
+With P-P plots will plot for each observed PSM score $t$ the empirical probability to observe a decoy with score $x \leq t$ to the empirical probability to observe a target with score $x \leq t$: 
 
 $$\hat{\text{P}}\left[\text{decoy with score } x \leq t\right] = \frac{\# \text{decoys with score } x \leq t}{\# \text{decoys}}$$
 
@@ -309,5 +320,5 @@ points(F1(x),F2(x),col="blue",cex=2,pch=19)
 Note, that 
 
 - the points corresponding to low score values follow a straight line indicating that targets and decoys scores are similarly distributed 
-- this line has an angle equal to fraction of bad hits, which is estimated as $\frac{\# \text{decoys}}{\#\text{targets}}$ and is indicated by the black line in the plot. 
+- this line has an angle equal to fraction of bad hits, which is estimated as $\hat\pi_b=\frac{\# \text{decoys}}{\#\text{targets}}$ and is indicated by the black line in the plot. 
 - This line can be used to assess the assumption that bad hits are equally likely matching to targets sequences as to decoy sequences. 

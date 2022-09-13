@@ -182,7 +182,7 @@ Both type of deviations should be of concern as they indicate that the FDR retur
 2. Unzip the data 
 
 ## Assess the search you performed in "Tutorial 1. Peptide and Protein Identification" at [https://compomics.com/bioinformatics-for-proteomics/identification/](https://compomics.com/bioinformatics-for-proteomics/identification/)
-Open the search from tutorial 1.3. in Peptide Shaker and export the search to an mzid file by clicking export > Peptide Shaker Project As > mzIdentML. Evaluate the TDA for the ommsa, X!Tandem and the Peptide Shaker score.
+Open the search from tutorial 1.3. in Peptide Shaker (see your own results or resources for tutorial 1.4) and export the search to an mzid file by clicking export > Peptide Shaker Project As > mzIdentML. Evaluate the TDA for the ommsa, X!Tandem and the Peptide Shaker score.
 
 Evaluate the TDA for the  X!Tandem, OMSSA and Peptide Shaker scores. What do you observe and try to explain. [1.4.a]
 
@@ -201,6 +201,7 @@ evalTargetDecoys(mzidTutorialCompomics)
 ```
 
 ## Pyrococcus - Peptide Shaker - Uniprot search
+
 Do the analysis for the search MSGF+, X!Tandem, OMSSA and Peptide Shaker scores based on all Pyrococcus proteins in a search against all pyrococcus peptides in Uniprot (data/identification/pyroUniprot.mzid). What do you observe explain. [1.4.b]
 
 ## Pyrococcus/Peptide Shaker - Swiss prot search
