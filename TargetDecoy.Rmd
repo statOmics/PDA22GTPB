@@ -165,7 +165,7 @@ The local fdr is also referred to as the posterior error probability (PEP), and 
 
 $$
 \begin{array}{lcl}
-\text{fdr}(x) &=&\text{PEP(x)}\\
+\text{lfdr}(x) &=&\text{PEP(x)}\\
 &=& \text{P}[\text{bad hit} \vert X=x]\\
 &=& \frac{\pi_b f_b(x)}{f(x)}
 \end{array}
