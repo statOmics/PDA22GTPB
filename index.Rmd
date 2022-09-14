@@ -48,7 +48,9 @@ You will also be requested to watch the following videos before attending the co
 ### 1. Bioinformatics for Proteomics
 
 - Slides Protein Identification: [pdf](assets/martens_protein_identification.pdf), [pptx](assets/martens_protein_identification.pptx)
-- Slides Data Sharing: [pdf](assets/martens_data_sharing.pdf),[pptx](assets/martens_data_sharing.pptx)
+- Slides Data Sharing: [pdf](assets/martens_data_sharing.pdf), [pptx](assets/martens_data_sharing.pptx)
+- Slides Quantification: [pdf](assets/martens_proteomics_quantification.pdf), [pptx](assets/martens_proteomics_quantification.pptx)
+
 
 - [Tutorials Bioinformatics for Proteomics](https://compomics.com/bioinformatics-for-proteomics/)  
 
@@ -70,14 +72,14 @@ You will also be requested to watch the following videos before attending the co
 #### 2.2. Statistical Data Analysis of Label Free Quantitative
 
 1. Preprocessing & Analysis of Label Free Quantitative Proteomics Experiments with Simple Designs
-  - Lecture: [[html](./pda_quantification_preprocessing.html)], [[PDF](./pda_quantification_preprocessing.pdf)]
+  - Lecture: [html](./pda_quantification_preprocessing.html), [pdf](./pda_quantification_preprocessing.pdf)
   - Tutorial: [preprocessing](./pda_tutorialPreprocessing.html)
-  - Wrap-up Peptide-based Models: [[html](./pda_robustSummarisation_peptideModels.html)],[[PDF](./pda_robustSummarisation_peptideModels.pdf)]
+  - Wrap-up Peptide-based Models: [html](./pda_robustSummarisation_peptideModels.html), [pdf](./pda_robustSummarisation_peptideModels.pdf)
 
   2. Statistical Inference & Analysis of Experiments with Factorial Designs
-  - Lecture Differential Abundance Analysis: [[html](./pda_quantification_inference.html)], [[PDF](./pda_quantification_inference.pdf)]
+  - Lecture Differential Abundance Analysis: [html](./pda_quantification_inference.html), [pdf](./pda_quantification_inference.pdf)
   - Tutorial: [Design](pda_tutorialDesign.html)
-  - Wrap-up Blocking: [[html](./pda_blocking_wrapup.html)], [[PDF](./pda_blocking_wrapup.pdf)]
+  - Wrap-up Blocking: [html](./pda_blocking_wrapup.html), [pdf](./pda_blocking_wrapup.pdf)
 
 ---
 
