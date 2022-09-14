@@ -161,7 +161,7 @@ Let $x$ be the PSM score
 The scores will follow a mixture distribution:
 
 $$f(x) = \pi_b \mathbin{\color{orange}{ f_b(x)}}+(1-\pi_b)\mathbin{\color{green}{ f_g(x)}},$$
-What is the local fdr also referred to as the posterior error probability (PEP), probability that a PSM with a score $x$ is a bad hit. 
+The local fdr is also referred to as the posterior error probability (PEP), and is the probability that a PSM with a score $x$ is a bad hit. 
 
 $$
 \begin{array}{lcl}
@@ -210,7 +210,7 @@ rect(5,-10,30,1500,lwd=2,border="darkorchid4")
 - So we know how many PSMs we return, i.e. TP + FP: 
 $$\text{#PSMs with } x \geq t$$ 
 
-and we can also estimate the probability on a target above the threshold empirically:
+and we can also estimate the probability on a PSM above the threshold empirically:
 
 $$1-\hat{\text{F}}(t) = \frac{\text{#PSMs with } x \geq t}{\text{#PSMs}}$$ 
 
