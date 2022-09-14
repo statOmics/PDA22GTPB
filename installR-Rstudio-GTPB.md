@@ -8,3 +8,12 @@ sudo apt-get -y install netcdf-bin
 sudo apt-get install libnetcdf-dev
 wget https://download1.rstudio.org/desktop/bionic/amd64/rstudio-2022.07.1-554-amd64.deb
 sudo apt install -f ./rstudio-2022.07.1-554-amd64.deb
+
+##### If you have the Error: Graphics API version mismatch in R
+sudo rm -rf /usr/lib/R/site-library/ragg
+sudo apt-get install -y libfreetype6-dev
+sudo apt-get install -y libpng-dev
+sudo apt-get install -y libtiff5-dev
+sudo apt-get install -y libjpeg-dev
+sudo R
+BiocManager::install("ragg")
