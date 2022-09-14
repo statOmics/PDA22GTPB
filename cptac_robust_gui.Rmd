@@ -51,9 +51,7 @@ launchMsqrob2App()
 
 ![Figure 3. msqrob2 ShinyApp](./figures/shinyApp.png)
 
-4. It is advicable to open the shiny app in a webbrowser. You can do that by clicking on the button `Open in Browser`, which you can find above the blue navigation bar and the shinyApp will pop up in a new browser tab/window. 
-
-![Figure 4. msqrob2gui in browser tab](./figures/msqrob2gui.png)
+4. It is recommended to put the shiny app on full screen modus. 
 
 ### 2.2.1. The Input tab
 
