@@ -67,7 +67,7 @@ You will also be requested to watch the following videos before attending the co
 #### 2.1. Identification
 
 - [Target Decoy QC](TargetDecoy.html)
-- [Tutorial](tutorialTargetDecoyQC.html)
+- [Tutorial](TargetDecoyTutorial.html)
 
 #### 2.2. Statistical Data Analysis of Label Free Quantitative
 

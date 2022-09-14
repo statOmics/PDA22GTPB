@@ -12,6 +12,8 @@ navbar:
         href: assets/martens_protein_identification.pdf
       - text: 1.2. Data Sharing
         href: assets/martens_data_sharing.pdf
+      - text: 1.3. Quantification
+        href: assets/martens_proteomics_quantification.pdf
       - text: 2.1. Identification - FDR - QC
         href: TargetDecoy.html
       - text: 2.2.1. Quantification - Preprocessing
