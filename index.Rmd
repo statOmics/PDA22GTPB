@@ -68,6 +68,7 @@ You will also be requested to watch the following videos before attending the co
 
 - [Target Decoy QC](TargetDecoy.html)
 - [Tutorial](TargetDecoyTutorial.html)
+- Solutions: [Uniprot search](mzIDuniprotTutorial.html), [Swissprot search](mzIDswissprotTutorial.html)
 
 #### 2.2. Statistical Data Analysis of Label Free Quantitative
 
