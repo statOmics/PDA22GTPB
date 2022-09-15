@@ -1,5 +1,5 @@
 ---
-title: "tutorial: Evaluate pyrococcus searches using uniprot and peptide shaker"
+title: "Tutorial: Evaluate pyrococcus searches using uniprot and peptide shaker"
 author: 
   - name: Lieven Clement
     affiliation:
