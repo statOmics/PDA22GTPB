@@ -1,0 +1,18 @@
+---
+title: "Wrapup day 4"
+output: html_document
+---
+
+- Why should we reuse data?
+
+- Can you give examples of the value that ML can bring us?
+
+- Can you define the FDR
+
+- What is the difference between local fdr and global fdr 
+
+- How do we estimate the FDR in the identification task in proteomics
+
+- What are the assumptions of the target decoy approach.
+
+- How can we evaluate these assumptions. 

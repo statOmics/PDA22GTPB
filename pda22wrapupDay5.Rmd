@@ -1,0 +1,18 @@
+---
+title: "Wrapup day 5"
+output: html_document
+---
+
+- Link workflow to characteristics of intensities
+- Link files to quantification
+- Which preprocessing steps do we have to take? 
+- Why robust regression in summarization? 
+- Formulate research question for mouse CRD  design
+- Translate that in a linear model
+- Interpret model parameters
+- Translate research question in model parameter
+- Formulate null and alternative
+- Multiple testing. How FDR
+- Empirical Bayes
+
+

@@ -1,0 +1,22 @@
+---
+title: "Questions Wrapup 4: preprocessing and DA analysis"
+author: "Lieven Clement"
+date: "15/09/2022"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 1. How confident are you in explaining the need to log transform the intensities?
+
+## 2. How confident are you in explaining the need for normalisation?
+
+## 3. How confident are you in explaining that we have to correct for peptide effects in the summarization? 
+
+## 4. How confident are you in formulating the linear model for a two group comparison? 
+
+## 5. How confident are you in formulating the null and alternative hypothesis for a two group comparison? 
+
+## 6. How confident are you in interpreting the model parameters in terms of the research context? 
