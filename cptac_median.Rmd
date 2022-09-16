@@ -71,27 +71,53 @@ ecols <- grep(
   "Intensity\\.", 
   names(read.delim(peptidesFile))
   )
+```
 
+Next, we read the data and store it in QFeatures object
+
+```{r}
 pe <- readQFeatures(
   table = peptidesFile,
   fnames = 1,
   ecol = ecols,
   name = "peptideRaw", sep="\t")
-
-colnames(pe)
 ```
 
-In the following code chunk, we can extract the spikein condition from the raw file name.
+The QFeatures object pe currently contains a single assay, named peptideRaw.
+
+We extract the column names from the peptideRaw assay and see that this contains information about the spike-in condition.
 
 ```{r}
-cond <- which(
-  strsplit(colnames(pe)[[1]][1], split = "")[[1]] == "A") # find where condition is stored
-
-colData(pe)$condition <- substr(colnames(pe), cond, cond) %>%
-  unlist %>%  
-  as.factor
+colnames(pe[["peptideRaw"]])
 ```
 
+We rename the colnames by dropping the "Intensity." from the name.
+
+```{r}
+(newNames <-  sub(
+  pattern = "Intensity\\.", 
+  replacement = "",
+  colnames(pe[["peptideRaw"]]))
+ )
+```
+
+```{r}
+pe <- renameColname(pe, 
+                    i = "peptideRaw",
+                    newNames)
+pe <- renamePrimary(pe, newNames)
+colnames(pe[["peptideRaw"]])
+```
+
+In the following code chunk, we add the spikein condition that we can read in the raw file name to the colData.
+
+```{r}
+colData(pe)$condition <-  
+  colnames(pe[["peptideRaw"]]) %>%
+  substr(start = 2, stop = 2) %>%
+  as.factor
+colData(pe)$condition
+```
 
 We calculate how many non zero intensities we have per peptide and this
 will be useful for filtering.

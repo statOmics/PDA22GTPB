@@ -1,0 +1,18 @@
+---
+title: "Questions Wrapup 3: Data Sharing,  FDR, Target Decoy Assumptions"
+author: "Lieven Clement"
+date: "15/09/2022"
+output: ioslides_presentation
+---
+
+```{r setup, include=FALSE, cache=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+## 1. How confident are you in explaining the value of data reuse in proteomics? 
+
+## 2. How confident are you in explaining the assumptions of the TDA? 
+
+## 3. How confident are you in spotting deviations of the TDA assumptions? 
+
+## 4. How confident are you in explaining how deviations that you observe in the TDA diagnostic plots impact FDR of the PSMs lists that are returned by a search engine? 
